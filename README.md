@@ -85,7 +85,11 @@ Each app requires the following environment variables:
 - `VITE_DEV_TENANT` — tenant slug used during local development (default: `demo`)
 - `VITE_APP_URL` — public site base URL used by RSS and sitemap generation
 
+A root `.env.example` is included for shared environment values.
+
 For full setup details, see [docs/SETUP.md](./docs/SETUP.md).
+
+See [docs/SUPABASE_SCHEMA.md](./docs/SUPABASE_SCHEMA.md) for the expected Supabase table and column layout.
 
 ## Architecture Notes
 
@@ -94,3 +98,8 @@ This project uses tenant-aware row access through Supabase. All queries in `pack
 Tenant slugs are resolved by `packages/shared/tenant.ts`, which extracts the tenant from the hostname and falls back to `VITE_DEV_TENANT` for localhost.
 
 See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for an architectural overview.
+
+## Additional Documentation
+
+- [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) — deployment and hosting guidance
+- [docs/ADMIN_GUIDE.md](./docs/ADMIN_GUIDE.md) — admin panel usage and tenant permissions
