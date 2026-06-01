@@ -81,9 +81,11 @@ npm run dev:admin
 Each app requires the following environment variables:
 
 - `VITE_SUPABASE_URL` — Supabase project URL
-- `VITE_SUPABASE_ANON_KEY` — Supabase anonymous API key
+- `VITE_SUPABASE_ANON_KEY` — Supabase anonymous API key for client-side requests
+- `SUPABASE_SERVICE_ROLE_KEY` — server-side Supabase service role key used by protected backend routes
 - `VITE_DEV_TENANT` — tenant slug used during local development (default: `demo`)
 - `VITE_APP_URL` — public site base URL used by RSS and sitemap generation
+- `VITE_TENANT_ROOT_DOMAINS` — comma-separated tenant root domains used by hostname-based tenant resolution
 
 A root `.env.example` is included for shared environment values.
 

@@ -12,6 +12,7 @@ const navItems = [
   { to: "/berita", key: "nav_news" as const },
   { to: "/search", key: "nav_search" as const },
   { to: "/galeri", key: "nav_gallery" as const },
+  { to: "/video", key: "nav_videos" as const },
   { to: "/press-kit", key: "nav_press_kit" as const },
   { to: "/profil", key: "nav_profile" as const },
   { to: "/kontak", key: "nav_contact" as const },

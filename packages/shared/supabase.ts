@@ -16,6 +16,34 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL!;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY!;
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+let serverSupabaseClient: ReturnType<typeof createClient> | null = null;
+
+function getServerSupabaseClient() {
+  if (typeof window !== "undefined") {
+    throw new Error("Server Supabase client must be used on the server only");
+  }
+
+  if (serverSupabaseClient) return serverSupabaseClient;
+
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceRoleKey) {
+    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY environment variable");
+  }
+
+  serverSupabaseClient = createClient(SUPABASE_URL, serviceRoleKey, {
+    auth: { persistSession: false },
+  });
+
+  return serverSupabaseClient;
+}
+
+export function getSupabaseClient() {
+  if (typeof window === "undefined" && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return getServerSupabaseClient();
+  }
+  return supabase;
+}
+
 export interface PagedResult<T> {
   items: T[];
   totalItems: number;
@@ -55,7 +83,8 @@ export async function getTenantId(tenantSlug?: string | null): Promise<string> {
     return tenantIdCache.get(slug)!;
   }
 
-  const { data, error } = await supabase
+  const client = typeof window === "undefined" && process.env.SUPABASE_SERVICE_ROLE_KEY ? getServerSupabaseClient() : supabase;
+  const { data, error } = await client
     .from("tenants")
     .select("id")
     .eq("slug", slug)
@@ -412,7 +441,9 @@ export async function markContactRead(id: string, tenantSlug?: string | null) {
 
 export async function submitContact(contact: Omit<ContactMessage, "status" | "created_at" | "tenant_id">, tenantSlug?: string | null) {
   const tenantId = await getTenantId(tenantSlug);
-  const { data, error } = await supabase
+  const supabaseClient = getSupabaseClient();
+
+  const { data, error } = await supabaseClient
     .from("contacts")
     .insert({
       name: contact.name,

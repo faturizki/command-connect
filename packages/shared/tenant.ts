@@ -4,15 +4,18 @@
  * infopers.web.id          → null (root domain)
  * localhost:5173            → 'demo' (dev fallback)
  */
+function getConfiguredTenantRoots(): string[] {
+  const envValues = import.meta.env.VITE_TENANT_ROOT_DOMAINS?.split(",") ?? [];
+  const roots = envValues.map((value) => value.trim()).filter(Boolean);
+  return roots.length > 0 ? roots : ["infopers.web.id", "infopers.biz.id"];
+}
+
 export function getTenantSlug(hostname: string): string | null {
   if (hostname.startsWith("localhost") || hostname.startsWith("127.")) {
     return import.meta.env.VITE_DEV_TENANT ?? "demo";
   }
 
-  const knownRoots = [
-    "infopers.web.id",
-    "infopers.biz.id",
-  ];
+  const knownRoots = getConfiguredTenantRoots();
 
   for (const root of knownRoots) {
     if (hostname === root) return null;

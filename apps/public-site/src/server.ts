@@ -5,7 +5,14 @@ import { renderErrorPage } from "./lib/error-page";
 import { getPublishedNewsFeed, getAllPublishedNews } from "@shared/supabase";
 import { getTenantSlug } from "@shared/tenant";
 
-const SITE_URL = process.env.VITE_APP_URL || "http://localhost:4173";
+function getSiteUrl(request: Request): string {
+  if (process.env.VITE_APP_URL) {
+    return process.env.VITE_APP_URL;
+  }
+
+  const url = new URL(request.url);
+  return `${url.protocol}//${url.host}`;
+}
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -70,9 +77,10 @@ export default {
 async function handleRss(request: Request) {
   const tenantSlug = getTenantSlug(new URL(request.url).hostname) ?? undefined;
   const news = await getPublishedNewsFeed("en", 20, tenantSlug);
+  const siteUrl = getSiteUrl(request);
   const itemsXml = news.items
     .map((item) => {
-      const itemLink = `${SITE_URL}/berita/${item.slug ?? item.id}`;
+      const itemLink = `${siteUrl}/berita/${item.slug ?? item.id}`;
       const itemTitle = escapeXml(item.title?.en ?? item.title?.id ?? "Berita");
       const itemDescription = escapeXml(item.excerpt?.en ?? item.excerpt?.id ?? "");
       const pubDate = new Date(item.date).toUTCString();
@@ -92,7 +100,7 @@ async function handleRss(request: Request) {
 <rss version="2.0">
   <channel>
     <title>Command Connect News</title>
-    <link>${SITE_URL}/berita</link>
+    <link>${siteUrl}/berita</link>
     <description>Berita terbaru dari Korps Publik & Pers.</description>
     <language>en-us</language>
     ${itemsXml}
@@ -120,6 +128,8 @@ async function handleSitemap(request: Request) {
     page++;
   }
 
+  const siteUrl = getSiteUrl(request);
+
   const staticPaths = [
     "/",
     "/berita",
@@ -139,7 +149,7 @@ async function handleSitemap(request: Request) {
   ]
     .map((path) => `
     <url>
-      <loc>${SITE_URL}${path}</loc>
+      <loc>${siteUrl}${path}</loc>
       <changefreq>daily</changefreq>
       <priority>0.7</priority>
     </url>`)

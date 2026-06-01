@@ -18,8 +18,10 @@ Set the same Supabase variables for both applications:
 ```env
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 VITE_DEV_TENANT=demo
 VITE_APP_URL=https://your-public-site-domain.com
+VITE_TENANT_ROOT_DOMAINS=infopers.web.id,infopers.biz.id
 ```
 
 ### Notes

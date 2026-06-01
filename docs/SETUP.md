@@ -37,8 +37,10 @@ cp apps/admin/.env.example apps/admin/.env
 ```env
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 VITE_DEV_TENANT=demo
 VITE_APP_URL=http://localhost:4173
+VITE_TENANT_ROOT_DOMAINS=infopers.web.id,infopers.biz.id
 ```
 
 ### Notes

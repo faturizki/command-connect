@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
 import { getNews } from "@shared/supabase";
+import { handleSupabaseError } from "@/lib/error-handling";
 
 export const Route = createFileRoute("/berita")({
   head: () => ({
@@ -24,9 +25,16 @@ function BeritaPage() {
   const [category, setCategory] = useState<string | undefined>(undefined);
   const perPage = 9;
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["news", lang, page, category],
     queryFn: () => getNews(lang, page, perPage, category),
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    meta: {
+      errorMessage: lang === "id"
+        ? "Gagal memuat daftar berita"
+        : "Failed to load news list",
+    },
   });
 
   const newsItems = data?.items ?? [];
@@ -47,6 +55,8 @@ function BeritaPage() {
     setCategory(value === allLabel ? undefined : value);
     setPage(1);
   }
+
+  const errorMessage = error ? handleSupabaseError(error, lang) : null;
 
   return (
     <SiteLayout>
@@ -79,8 +89,22 @@ function BeritaPage() {
             {lang === "id" ? "Memuat berita..." : "Loading news..."}
           </div>
         ) : isError ? (
-          <div className="py-24 text-center text-rose-500">
-            {lang === "id" ? "Gagal memuat berita." : "Unable to load news."}
+          <div className="space-y-4 rounded-lg border border-destructive/50 bg-destructive/10 p-8 py-24 text-center">
+            <div className="text-rose-500">
+              <div className="font-semibold">{lang === "id" ? "Gagal memuat berita" : "Unable to load news"}</div>
+              <div className="mt-2 text-sm text-muted-foreground">
+                {errorMessage || (lang === "id"
+                  ? "Terjadi kesalahan saat mengambil data. Silakan coba lagi."
+                  : "An error occurred while loading the news. Please try again.")}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              {lang === "id" ? "Coba Lagi" : "Try Again"}
+            </button>
           </div>
         ) : !featured ? (
           <div className="py-24 text-center text-muted-foreground">

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
 import { getNewsBySlug, getHoaxClaimsByNewsId } from "@shared/supabase";
-import HoaxCheckerBanner from "@/components/ui/hoax-checker-banner";
+import { HoaxCheckerBanner } from "@/components/ui/hoax-checker-banner";
 
 export const Route = createFileRoute("/berita/$slug")({
   head: ({ params }) => ({
@@ -22,7 +22,18 @@ function BeritaSlugPage() {
   const { lang } = useI18n();
   const params = useParams({ from: "/berita/$slug" });
   const slug = params.slug as string;
-  const { data, isLoading, isError } = useQuery({ queryKey: ["news", slug], queryFn: () => getNewsBySlug(slug) });
+  
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["news", slug],
+    queryFn: () => getNewsBySlug(slug),
+  });
+
+  // Fetch hoax claims for this article
+  const { data: hoaxClaims, isLoading: hoaxClaimsLoading } = useQuery({
+    queryKey: ["hoax-claims", data?.id],
+    queryFn: () => getHoaxClaimsByNewsId(data!.id),
+    enabled: !!data?.id,
+  });
 
   if (isLoading) {
     return (
@@ -70,6 +81,20 @@ function BeritaSlugPage() {
             <p>{data.excerpt?.[lang] ?? data.excerpt?.en}</p>
           </div>
         </div>
+
+        {/* Hoax Checker Banner - displays if hoax claims exist for this article */}
+        {!hoaxClaimsLoading && hoaxClaims && hoaxClaims.length > 0 && (
+          <div className="mt-12 border-t border-border pt-12">
+            <h2 className="mb-8 font-display text-2xl font-bold">
+              {lang === "id" ? "Klarifikasi Berita" : "Fact Check"}
+            </h2>
+            <div className="space-y-8">
+              {hoaxClaims.map((claim) => (
+                <HoaxCheckerBanner key={claim.id} claim={claim} />
+              ))}
+            </div>
+          </div>
+        )}
       </section>
     </SiteLayout>
   );

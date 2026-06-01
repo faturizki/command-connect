@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { submitContact } from "@shared/supabase";
 
 export const Route = createFileRoute("/kontak")({
   head: () => ({
@@ -35,6 +34,7 @@ function KontakPage() {
     const email = formData.get("email")?.toString().trim() ?? "";
     const message = formData.get("message")?.toString().trim() ?? "";
 
+    // Basic client-side validation before sending
     if (!name || !org || !email || !message) {
       setError(lang === "id" ? "Semua field harus diisi." : "All fields are required.");
       setSubmitting(false);
@@ -42,9 +42,44 @@ function KontakPage() {
     }
 
     try {
-      await submitContact({ name, org, email, message });
-      setSent(true);
-      event.currentTarget.reset();
+      // Submit to server API with validation and rate limiting
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, org, email, message }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        
+        if (response.status === 429) {
+          // Rate limited
+          setError(
+            lang === "id"
+              ? "Terlalu banyak pengajuan. Silakan coba lagi nanti."
+              : "Too many submissions. Please try again later.",
+          );
+        } else if (response.status === 400) {
+          // Validation error
+          const fieldError = errorData.errors?.[0]?.message || errorData.errors?.[0]?.field;
+          setError(
+            lang === "id"
+              ? `Validasi gagal: ${fieldError || "Data tidak valid"}`
+              : `Validation error: ${fieldError || "Invalid data"}`,
+          );
+        } else {
+          // Generic error
+          setError(
+            lang === "id"
+              ? "Terjadi kesalahan saat mengirim pesan. Silakan coba lagi."
+              : "Unable to send the message. Please try again.",
+          );
+        }
+      } else {
+        // Success
+        setSent(true);
+        event.currentTarget.reset();
+      }
     } catch (submitError) {
       console.error(submitError);
       setError(

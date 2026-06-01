@@ -15,7 +15,9 @@
     "lint": "cd apps/public-site && npm run lint",
     "lint:admin": "cd apps/admin && npm run lint",
     "format": "cd apps/public-site && npm run format",
-    "format:admin": "cd apps/admin && npm run format"
+    "format:admin": "cd apps/admin && npm run format",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -89,6 +91,7 @@
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vitest": "^4.1.8"
   }
 }
