@@ -21,7 +21,7 @@ export const Route = createFileRoute("/press-kit")({
 function PressKitPage() {
   const { t, lang } = useI18n();
   const pbClient = getPocketBaseClient();
-  const { data } = useQuery(["pressKit"], () => getPressKit());
+  const { data } = useQuery({ queryKey: ["pressKit"], queryFn: () => getPressKit() });
   const pressKit = data?.items ?? [];
 
   return (

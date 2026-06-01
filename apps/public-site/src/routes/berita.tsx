@@ -24,11 +24,10 @@ function BeritaPage() {
   const [category, setCategory] = useState<string | undefined>(undefined);
   const perPage = 9;
 
-  const { data, isLoading, isError } = useQuery(
-    ["news", lang, page, category],
-    () => getNews(lang, page, perPage, category),
-    { keepPreviousData: true },
-  );
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["news", lang, page, category],
+    queryFn: () => getNews(lang, page, perPage, category),
+  });
 
   const newsItems = data?.items ?? [];
   const allLabel = lang === "id" ? "Semua" : "All";
@@ -133,7 +132,8 @@ function BeritaPage() {
                     </span>
                   </div>
                   <Link
-                    to={`/berita/${n.slug ?? n.id}`}
+                    to="/berita/$slug"
+                    params={{ slug: String(n.slug ?? n.id ?? "") }}
                     className="mt-3 block font-display text-xl font-bold leading-tight text-foreground transition-colors hover:text-accent-red"
                   >
                     {n.title[lang]}

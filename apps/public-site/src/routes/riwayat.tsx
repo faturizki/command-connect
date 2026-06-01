@@ -19,7 +19,7 @@ export const Route = createFileRoute("/riwayat")({
 
 function RiwayatPage() {
   const { t, lang } = useI18n();
-  const { data } = useQuery(["officers", "past"], () => getOfficers("past"));
+  const { data } = useQuery({ queryKey: ["officers", "past"], queryFn: () => getOfficers("past") });
   const past = [...(data?.items ?? [])].sort((a, b) =>
     (b.termEnd ?? "").localeCompare(a.termEnd ?? "")
   );
@@ -59,9 +59,9 @@ function RiwayatPage() {
                     </span>
                   </div>
                   <h3 className="mt-2 font-display text-xl font-bold">
-                    {o.rank[lang]} {o.name}
+                    {o.rank.name[lang]} {o.name}
                   </h3>
-                  <p className="text-muted-foreground">{o.position[lang]}</p>
+                  <p className="text-muted-foreground">{o.position.name[lang]}</p>
                   <div className="mt-3 font-mono text-xs text-muted-foreground">
                     {formatMonth(o.termStart, lang)} —{" "}
                     {o.termEnd ? formatMonth(o.termEnd, lang) : (lang === "id" ? "Sekarang" : "Present")}

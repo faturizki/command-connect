@@ -24,11 +24,11 @@ function SearchPage() {
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
 
-  const { data, isLoading, isError } = useQuery(
-    ["search", submittedQuery, lang],
-    () => searchContent(submittedQuery, lang),
-    { enabled: submittedQuery.length > 0 },
-  );
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["search", submittedQuery, lang],
+    queryFn: () => searchContent(submittedQuery, lang),
+    enabled: submittedQuery.length > 0,
+  });
 
   const results = useMemo(
     () => ({
@@ -109,7 +109,8 @@ function SearchPage() {
                 {results.news.map((item) => (
                   <article key={item.id} className="rounded-3xl border border-border bg-card p-6">
                     <Link
-                      to={`/berita/${item.slug ?? item.id}`}
+                      to="/berita/$slug"
+                      params={{ slug: String(item.slug ?? item.id ?? "") }}
                       className="font-display text-lg font-semibold text-foreground transition-colors hover:text-accent-red"
                     >
                       {item.title[lang]}

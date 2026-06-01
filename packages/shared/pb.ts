@@ -1,4 +1,4 @@
-import PocketBase from "pocketbase";
+import PocketBase, { type ListResult } from "pocketbase";
 import type {
   Lang,
   NewsArticle,
@@ -18,35 +18,35 @@ export function getPocketBaseClient() {
   return client;
 }
 
-export async function getNews(lang: Lang, page = 1, perPage = 10, category?: string) {
+export async function getNews(lang: Lang, page = 1, perPage = 10, category?: string): Promise<ListResult<NewsArticle>> {
   const filters = ["published=true"];
 
   if (category) {
-    filters.push(`category.id = \"${category}\"`);
+    filters.push(`category.id = "${category}"`);
   }
 
-  return client.collection("news").getList(page, perPage, {
+  return client.collection("news").getList<NewsArticle>(page, perPage, {
     sort: "-date",
     filter: filters.join(" && "),
   });
 }
 
-export async function getPublishedNewsFeed(lang: Lang, limit = 20) {
-  return client.collection("news").getList(1, limit, {
+export async function getPublishedNewsFeed(lang: Lang, limit = 20): Promise<ListResult<NewsArticle>> {
+  return client.collection("news").getList<NewsArticle>(1, limit, {
     sort: "-date",
     filter: "published=true",
   });
 }
 
-export async function getAllPublishedNews() {
-  return client.collection("news").getFullList(200, {
+export async function getAllPublishedNews(): Promise<NewsArticle[]> {
+  return client.collection("news").getFullList<NewsArticle>(200, {
     sort: "-date",
     filter: "published=true",
   });
 }
 
-export async function getNewsAdminList(page = 1, perPage = 10, filter?: string) {
-  return client.collection("news").getList(page, perPage, {
+export async function getNewsAdminList(page = 1, perPage = 10, filter?: string): Promise<ListResult<NewsArticle>> {
+  return client.collection("news").getList<NewsArticle>(page, perPage, {
     sort: "-date",
     filter,
   });
@@ -82,16 +82,16 @@ export async function deleteNews(id: string) {
   return client.collection("news").delete(id);
 }
 
-export async function getNewsBySlug(slug: string) {
+export async function getNewsBySlug(slug: string): Promise<NewsArticle> {
   try {
-    return await client.collection("news").getFirstListItem(`slug = \"${slug}\"`);
+    return await client.collection("news").getFirstListItem<NewsArticle>(`slug = "${slug}"`);
   } catch {
-    return client.collection("news").getOne(slug);
+    return client.collection("news").getOne<NewsArticle>(slug);
   }
 }
 
-export async function getEventsAdminList(page = 1, perPage = 10, filter?: string) {
-  return client.collection("events").getList(page, perPage, {
+export async function getEventsAdminList(page = 1, perPage = 10, filter?: string): Promise<ListResult<EventItem>> {
+  return client.collection("events").getList<EventItem>(page, perPage, {
     sort: "-date",
     filter,
   });
@@ -125,8 +125,8 @@ export async function deleteEvent(id: string) {
   return client.collection("events").delete(id);
 }
 
-export async function getOfficersAdminList(page = 1, perPage = 10, filter?: string) {
-  return client.collection("officers").getList(page, perPage, {
+export async function getOfficersAdminList(page = 1, perPage = 10, filter?: string): Promise<ListResult<Officer>> {
+  return client.collection("officers").getList<Officer>(page, perPage, {
     sort: "order",
     filter,
   });
@@ -166,8 +166,8 @@ export async function deleteOfficer(id: string) {
   return client.collection("officers").delete(id);
 }
 
-export async function getGalleryAdminList(page = 1, perPage = 10, filter?: string) {
-  return client.collection("gallery").getList(page, perPage, {
+export async function getGalleryAdminList(page = 1, perPage = 10, filter?: string): Promise<ListResult<GalleryItem>> {
+  return client.collection("gallery").getList<GalleryItem>(page, perPage, {
     sort: "order",
     filter,
   });
@@ -195,8 +195,8 @@ export async function deleteGalleryItem(id: string) {
   return client.collection("gallery").delete(id);
 }
 
-export async function getPressKitAdminList(page = 1, perPage = 10, filter?: string) {
-  return client.collection("press_kit").getList(page, perPage, {
+export async function getPressKitAdminList(page = 1, perPage = 10, filter?: string): Promise<ListResult<PressKitItem>> {
+  return client.collection("press_kit").getList<PressKitItem>(page, perPage, {
     sort: "order",
     filter,
   });
@@ -226,8 +226,8 @@ export async function deletePressKitItem(id: string) {
   return client.collection("press_kit").delete(id);
 }
 
-export async function getContactMessages(page = 1, perPage = 20, filter?: string) {
-  return client.collection("contacts").getList(page, perPage, {
+export async function getContactMessages(page = 1, perPage = 20, filter?: string): Promise<ListResult<ContactMessage>> {
+  return client.collection("contacts").getList<ContactMessage>(page, perPage, {
     sort: "-created",
     filter,
   });
@@ -247,27 +247,27 @@ export async function getEvents(upcoming?: boolean) {
   });
 }
 
-export async function getOfficers(status: "active" | "past") {
-  return client.collection("officers").getList(1, 50, {
+export async function getOfficers(status: "active" | "past"): Promise<ListResult<Officer>> {
+  return client.collection("officers").getList<Officer>(1, 50, {
     sort: "order",
     filter: `status = \"${status}\"`,
   });
 }
 
-export async function getGallery() {
-  return client.collection("gallery").getList(1, 50, {
+export async function getGallery(): Promise<ListResult<GalleryItem>> {
+  return client.collection("gallery").getList<GalleryItem>(1, 50, {
     sort: "order",
   });
 }
 
-export async function getPressKit() {
-  return client.collection("press_kit").getList(1, 50, {
+export async function getPressKit(): Promise<ListResult<PressKitItem>> {
+  return client.collection("press_kit").getList<PressKitItem>(1, 50, {
     sort: "order",
   });
 }
 
-export async function getSetting(key: string) {
-  return client.collection("settings").getFirstListItem(`key = \"${key}\"`);
+export async function getSetting(key: string): Promise<SettingRecord> {
+  return client.collection("settings").getFirstListItem<SettingRecord>(`key = "${key}"`);
 }
 
 export async function searchContent(query: string, lang: Lang): Promise<SearchResults> {
@@ -277,20 +277,20 @@ export async function searchContent(query: string, lang: Lang): Promise<SearchRe
   }
 
   const [news, events] = await Promise.all([
-    client.collection("news").getList(1, 20, {
+    client.collection("news").getList<NewsArticle>(1, 20, {
       sort: "-date",
       filter: "published=true",
       search: trimmed,
     }),
-    client.collection("events").getList(1, 20, {
+    client.collection("events").getList<EventItem>(1, 20, {
       sort: "date",
       search: trimmed,
     }),
   ]);
 
   return {
-    news: news.items as any,
-    events: events.items as any,
+    news: news.items,
+    events: events.items,
   };
 }
 

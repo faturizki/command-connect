@@ -16,7 +16,7 @@ export const Route = createFileRoute("/galeri")({
 
 function GaleriPage() {
   const { t, lang } = useI18n();
-  const { data } = useQuery(["gallery"], () => getGallery());
+  const { data } = useQuery({ queryKey: ["gallery"], queryFn: () => getGallery() });
   const gallery = data?.items ?? [];
 
   return (

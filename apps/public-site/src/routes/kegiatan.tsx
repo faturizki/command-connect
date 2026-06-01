@@ -20,7 +20,7 @@ export const Route = createFileRoute("/kegiatan")({
 
 function KegiatanPage() {
   const { t, lang } = useI18n();
-  const { data } = useQuery(["events"], () => getEvents());
+  const { data } = useQuery({ queryKey: ["events"], queryFn: () => getEvents() });
   const sorted = [...(data?.items ?? [])].sort((a, b) => a.date.localeCompare(b.date));
 
   return (

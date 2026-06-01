@@ -27,9 +27,9 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { t, lang } = useI18n();
-  const newsQuery = useQuery(["news", lang], () => getNews(lang, 1, 3));
-  const eventsQuery = useQuery(["events", "upcoming"], () => getEvents(true));
-  const officersQuery = useQuery(["officers", "active"], () => getOfficers("active"));
+  const newsQuery = useQuery({ queryKey: ["news", lang], queryFn: () => getNews(lang, 1, 3) });
+  const eventsQuery = useQuery({ queryKey: ["events", "upcoming"], queryFn: () => getEvents(true) });
+  const officersQuery = useQuery({ queryKey: ["officers", "active"], queryFn: () => getOfficers("active") });
 
   const activeLeaders = officersQuery.data?.items ?? [];
   const upcoming = [...(eventsQuery.data?.items ?? [])].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 2);
@@ -101,7 +101,8 @@ function Home() {
           {topNews.map((n, i) => (
             <Link
               key={n.id}
-              to={`/berita/${n.slug ?? n.id}`}
+              to="/berita/$slug"
+              params={{ slug: String(n.slug ?? n.id ?? "") }}
               className={`group block ${i === 0 ? "md:col-span-3" : ""}`}
             >
               <div className="overflow-hidden bg-muted">
@@ -230,9 +231,9 @@ function Home() {
               <div className="p-5">
                 <div className="eyebrow text-accent-red">{o.rankCode}</div>
                 <h3 className="mt-2 font-display text-xl font-bold leading-tight">
-                  {o.rank[lang]} {o.name}
+                  {o.rank.name[lang]} {o.name}
                 </h3>
-                <p className="mt-1 text-sm text-muted-foreground">{o.position[lang]}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{o.position.name[lang]}</p>
               </div>
             </article>
           ))}

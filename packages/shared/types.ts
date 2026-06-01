@@ -77,6 +77,7 @@ export interface ContactMessage {
   message: string;
   status: "new" | "read" | "replied";
   createdAt: string;
+  created?: string;
 }
 
 export interface SettingRecord {

@@ -304,7 +304,7 @@ export default function App() {
       setContactsError(null);
       try {
         const response = await getContactMessages(contactsPage, 15);
-        setContacts(response.items as ContactMessage[]);
+        setContacts(response.items);
         setContactsTotal(response.totalItems);
       } catch (error) {
         console.error("Failed to load contact messages", error);
@@ -735,7 +735,7 @@ export default function App() {
                 ? "Inbox Kontak"
                 : section === "settings"
                 ? "Pengaturan"
-                : section.charAt(0).toUpperCase() + section.slice(1)}
+                : (section as string).charAt(0).toUpperCase() + (section as string).slice(1)}
             </h1>
             <p>
               {section === "dashboard"
@@ -1462,7 +1462,7 @@ export default function App() {
                               {item.status}
                             </span>
                           </td>
-                          <td>{new Date(item.created || item.createdAt || Date.now()).toLocaleDateString("id-ID")}</td>
+                          <td>{new Date(item.createdAt || item.created || Date.now()).toLocaleDateString("id-ID")}</td>
                           <td>
                             <button className="button-secondary" type="button" onClick={() => handleMarkRead(item.id ?? "")} disabled={item.status !== "new"}>
                               Tandai Dibaca

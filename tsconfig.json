@@ -17,6 +17,7 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
+      "@/*": ["apps/public-site/src/*"],
       "@shared/*": ["./packages/shared/*"]
     }
   },

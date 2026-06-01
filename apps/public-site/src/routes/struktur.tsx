@@ -19,7 +19,7 @@ export const Route = createFileRoute("/struktur")({
 
 function StrukturPage() {
   const { t, lang } = useI18n();
-  const { data } = useQuery(["officers", "active"], () => getOfficers("active"));
+  const { data } = useQuery({ queryKey: ["officers", "active"], queryFn: () => getOfficers("active") });
   const active = data?.items ?? [];
 
   return (
@@ -55,9 +55,9 @@ function StrukturPage() {
                   </span>
                 </div>
                 <h3 className="mt-3 font-display text-2xl font-bold leading-tight">
-                  {o.rank[lang]} {o.name}
+                  {o.rank.name[lang]} {o.name}
                 </h3>
-                <p className="mt-1 text-base text-muted-foreground">{o.position[lang]}</p>
+                <p className="mt-1 text-base text-muted-foreground">{o.position.name[lang]}</p>
                 <div className="mt-4 border-t border-border pt-4 font-mono text-xs text-muted-foreground">
                   {lang === "id" ? "MENJABAT SEJAK" : "SERVING SINCE"} ·{" "}
                   {formatMonth(o.termStart, lang)}
@@ -84,7 +84,7 @@ function StrukturPage() {
                     {o.rankCode}
                   </td>
                   <td className="px-4 py-3 font-semibold">{o.name}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{o.position[lang]}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{o.position.name[lang]}</td>
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                     {formatMonth(o.termStart, lang)}
                   </td>

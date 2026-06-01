@@ -19,9 +19,9 @@ export const Route = createFileRoute("/berita/$slug")({
 
 function BeritaSlugPage() {
   const { lang } = useI18n();
-  const params = useParams();
+  const params = useParams({ from: "/berita/$slug" });
   const slug = params.slug as string;
-  const { data, isLoading, isError } = useQuery(["news", slug], () => getNewsBySlug(slug));
+  const { data, isLoading, isError } = useQuery({ queryKey: ["news", slug], queryFn: () => getNewsBySlug(slug) });
 
   if (isLoading) {
     return (
@@ -59,7 +59,7 @@ function BeritaSlugPage() {
               {data.category?.[lang] ?? data.category?.en ?? "News"}
             </span>
             <span className="font-mono text-muted-foreground">
-              {formatDate(data.date ?? data.created, lang)}
+              {formatDate(data.date, lang)}
             </span>
           </div>
           <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl">
