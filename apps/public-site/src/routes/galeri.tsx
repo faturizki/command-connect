@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { getGallery } from "@shared/pb";
+import { getGallery } from "@shared/supabase";
 
 export const Route = createFileRoute("/galeri")({
   head: () => ({

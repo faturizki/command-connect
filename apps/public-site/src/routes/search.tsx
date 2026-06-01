@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { searchContent } from "@shared/pb";
+import { searchContent } from "@shared/supabase";
 
 export const Route = createFileRoute("/search")({
   head: () => ({

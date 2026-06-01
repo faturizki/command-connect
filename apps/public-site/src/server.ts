@@ -2,7 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
-import { getPublishedNewsFeed, getAllPublishedNews } from "@shared/pb";
+import { getPublishedNewsFeed, getAllPublishedNews } from "@shared/supabase";
 
 const SITE_URL = process.env.VITE_APP_URL || "http://localhost:4173";
 

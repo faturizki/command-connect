@@ -17,14 +17,14 @@ export type Position = {
 
 export interface Officer {
   id?: string;
-  rankCode: string;
+  rank_code: string;
   rank: Rank;
   name: string;
   position: Position;
   photo: string;
   status: "active" | "past";
-  termStart: string;
-  termEnd: string;
+  term_start: string;
+  term_end: string;
   bio: LocalizedText;
   order?: number;
 }
@@ -56,15 +56,15 @@ export interface GalleryItem {
   id?: string;
   image: string;
   caption: LocalizedText;
-  takenAt: string;
+  taken_at: string;
   order?: number;
 }
 
 export interface PressKitItem {
   id?: string;
   name: string;
-  fileAsset: string;
-  sizeLabel: string;
+  file_asset: string;
+  size_label: string;
   type: string;
   order?: number;
 }
@@ -76,7 +76,7 @@ export interface ContactMessage {
   email: string;
   message: string;
   status: "new" | "read" | "replied";
-  createdAt: string;
+  created_at: string;
   created?: string;
 }
 

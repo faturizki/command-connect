@@ -2,90 +2,90 @@
 
 export type Officer = {
   id: string;
-  rankCode: string; // e.g. LETJEN, BRIGJEN
+  rank_code: string; // e.g. LETJEN, BRIGJEN
   rank: { id: string; en: string };
   name: string;
   position: { id: string; en: string };
   photo: string;
   status: "active" | "past";
-  termStart: string; // YYYY-MM
-  termEnd?: string; // undefined if active
+  term_start: string; // YYYY-MM
+  term_end?: string; // undefined if active
   bio?: { id: string; en: string };
 };
 
 export const officers: Officer[] = [
   {
     id: "1",
-    rankCode: "LETJEN",
+    rank_code: "LETJEN",
     rank: { id: "Letnan Jenderal", en: "Lieutenant General" },
     name: "Bagus Pratama",
     position: { id: "Komandan Korps", en: "Corps Commander" },
     photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=900&q=80",
     status: "active",
-    termStart: "2024-03",
+    term_start: "2024-03",
   },
   {
     id: "2",
-    rankCode: "BRIGJEN",
+    rank_code: "BRIGJEN",
     rank: { id: "Brigadir Jenderal", en: "Brigadier General" },
     name: "Sari Wulandari",
     position: { id: "Wakil Komandan", en: "Deputy Commander" },
     photo: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=900&q=80",
     status: "active",
-    termStart: "2024-05",
+    term_start: "2024-05",
   },
   {
     id: "3",
-    rankCode: "KOLONEL",
+    rank_code: "KOLONEL",
     rank: { id: "Kolonel", en: "Colonel" },
     name: "Arief Hidayat",
     position: { id: "Kepala Penerangan", en: "Head of Public Affairs" },
     photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=900&q=80",
     status: "active",
-    termStart: "2023-11",
+    term_start: "2023-11",
   },
   {
     id: "4",
-    rankCode: "LETKOL",
+    rank_code: "LETKOL",
     rank: { id: "Letnan Kolonel", en: "Lieutenant Colonel" },
     name: "Dian Permata",
     position: { id: "Kepala Hubungan Media", en: "Head of Media Relations" },
     photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=900&q=80",
     status: "active",
-    termStart: "2024-01",
+    term_start: "2024-01",
   },
   {
     id: "5",
-    rankCode: "LETJEN",
+    rank_code: "LETJEN",
     rank: { id: "Letnan Jenderal", en: "Lieutenant General" },
     name: "Wahyu Santoso",
     position: { id: "Komandan Korps", en: "Corps Commander" },
     photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=80",
     status: "past",
-    termStart: "2021-02",
-    termEnd: "2024-03",
+    term_start: "2021-02",
+    term_end: "2024-03",
   },
   {
     id: "6",
-    rankCode: "BRIGJEN",
+    rank_code: "BRIGJEN",
     rank: { id: "Brigadir Jenderal", en: "Brigadier General" },
     name: "Rahmat Ibrahim",
     position: { id: "Wakil Komandan", en: "Deputy Commander" },
     photo: "https://images.unsplash.com/photo-1542178243-bc20204b769f?w=900&q=80",
     status: "past",
-    termStart: "2020-08",
-    termEnd: "2024-05",
+    term_start: "2020-08",
+    term_end: "2024-05",
   },
   {
     id: "7",
-    rankCode: "KOLONEL",
+    rank_code: "KOLONEL",
     rank: { id: "Kolonel", en: "Colonel" },
     name: "Sutrisno Adi",
     position: { id: "Kepala Penerangan", en: "Head of Public Affairs" },
     photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=900&q=80",
     status: "past",
-    termStart: "2019-04",
-    termEnd: "2023-11",
+    term_start: "2019-04",
+    term_end: "2023-11",
   },
 ];
 

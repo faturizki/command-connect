@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { getNews } from "@shared/pb";
+import { getNews } from "@shared/supabase";
 
 export const Route = createFileRoute("/berita")({
   head: () => ({

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { getOfficers } from "@shared/pb";
+import { getOfficers } from "@shared/supabase";
 
 export const Route = createFileRoute("/riwayat")({
   head: () => ({
@@ -21,7 +21,7 @@ function RiwayatPage() {
   const { t, lang } = useI18n();
   const { data } = useQuery({ queryKey: ["officers", "past"], queryFn: () => getOfficers("past") });
   const past = [...(data?.items ?? [])].sort((a, b) =>
-    (b.termEnd ?? "").localeCompare(a.termEnd ?? "")
+    (b.term_end ?? "").localeCompare(a.term_end ?? "")
   );
 
   return (
@@ -53,7 +53,7 @@ function RiwayatPage() {
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="eyebrow text-accent-red">{o.rankCode}</span>
+                    <span className="eyebrow text-accent-red">{o.rank_code}</span>
                     <span className="bg-muted px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                       {t("past")}
                     </span>
@@ -63,8 +63,8 @@ function RiwayatPage() {
                   </h3>
                   <p className="text-muted-foreground">{o.position.name[lang]}</p>
                   <div className="mt-3 font-mono text-xs text-muted-foreground">
-                    {formatMonth(o.termStart, lang)} —{" "}
-                    {o.termEnd ? formatMonth(o.termEnd, lang) : (lang === "id" ? "Sekarang" : "Present")}
+                    {formatMonth(o.term_start, lang)} —{" "}
+                    {o.term_end ? formatMonth(o.term_end, lang) : (lang === "id" ? "Sekarang" : "Present")}
                   </div>
                 </div>
               </div>

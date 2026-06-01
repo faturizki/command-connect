@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { getEvents } from "@shared/pb";
+import { getEvents } from "@shared/supabase";
 
 export const Route = createFileRoute("/kegiatan")({
   head: () => ({

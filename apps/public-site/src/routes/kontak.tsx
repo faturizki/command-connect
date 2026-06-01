@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { submitContact } from "@shared/pb";
+import { submitContact } from "@shared/supabase";
 
 export const Route = createFileRoute("/kontak")({
   head: () => ({

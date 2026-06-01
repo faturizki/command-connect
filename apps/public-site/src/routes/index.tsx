@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight, Calendar, MapPin } from "lucide-react";
 import heroImg from "@/assets/hero-hq.jpg";
 import { SiteLayout } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { getEvents, getNews, getOfficers } from "@shared/pb";
+import { getEvents, getNews, getOfficers } from "@shared/supabase";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -229,7 +229,7 @@ function Home() {
                 />
               </div>
               <div className="p-5">
-                <div className="eyebrow text-accent-red">{o.rankCode}</div>
+                <div className="eyebrow text-accent-red">{o.rank_code}</div>
                 <h3 className="mt-2 font-display text-xl font-bold leading-tight">
                   {o.rank.name[lang]} {o.name}
                 </h3>

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ContactMessage, EventItem, GalleryItem, NewsArticle, Officer, PressKitItem } from "@shared/types";
 import {
+  adminSignIn,
+  adminSignOut,
   createEvent,
   createNews,
   createOfficer,
@@ -17,14 +19,14 @@ import {
   getNewsAdminList,
   getOfficersAdminList,
   getPressKitAdminList,
-  getPocketBaseClient,
+  getSupabaseClient,
   markContactRead,
   updateEvent,
   updateGalleryItem,
   updateNews,
   updateOfficer,
   updatePressKitItem,
-} from "@shared/pb";
+} from "@shared/supabase";
 
 type DashboardSummary = {
   totalNews: number;
@@ -63,7 +65,7 @@ const emptyEventDraft: EventItem = {
 };
 
 const emptyOfficerDraft: Officer = {
-  rankCode: "",
+  rank_code: "",
   rank: { code: "", name: { id: "", en: "" } },
   name: "",
   position: {
@@ -72,22 +74,22 @@ const emptyOfficerDraft: Officer = {
   },
   photo: "",
   status: "active",
-  termStart: new Date().toISOString().slice(0, 10),
-  termEnd: new Date().toISOString().slice(0, 10),
+  term_start: new Date().toISOString().slice(0, 10),
+  term_end: new Date().toISOString().slice(0, 10),
   bio: { id: "", en: "" },
 };
 
 const emptyGalleryDraft: GalleryItem = {
   image: "",
   caption: { id: "", en: "" },
-  takenAt: new Date().toISOString().slice(0, 10),
+  taken_at: new Date().toISOString().slice(0, 10),
   order: 0,
 };
 
 const emptyPressKitDraft: PressKitItem = {
   name: "",
-  fileAsset: "",
-  sizeLabel: "",
+  file_asset: "",
+  size_label: "",
   type: "",
   order: 0,
 };
@@ -109,10 +111,10 @@ function formatShortDate(iso: string) {
 }
 
 export default function App() {
-  const pb = getPocketBaseClient();
+  const supabase = getSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(pb.authStore.isValid);
+  const [authenticated, setAuthenticated] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [summary, setSummary] = useState<DashboardSummary>(initialSummary);
@@ -185,12 +187,30 @@ export default function App() {
   );
 
   useEffect(() => {
-    const unsubscribe = pb.authStore.onChange(() => {
-      setAuthenticated(pb.authStore.isValid);
+    let mounted = true;
+
+    async function initAuth() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Failed to get auth session", error);
+        return;
+      }
+      if (!mounted) return;
+      setAuthenticated(!!data.session);
+    }
+
+    initAuth();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      setAuthenticated(!!session);
     });
-    setAuthenticated(pb.authStore.isValid);
-    return unsubscribe;
-  }, [pb.authStore]);
+
+    return () => {
+      mounted = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   useEffect(() => {
     if (!authenticated) return;
@@ -199,10 +219,10 @@ export default function App() {
       setLoadingSummary(true);
       try {
         const [newsCount, eventsCount, contactsCount, officersCount] = await Promise.all([
-          pb.collection("news").getList(1, 1, { filter: "published=true" }),
-          pb.collection("events").getList(1, 1, { filter: "date >= now()" }),
-          pb.collection("contacts").getList(1, 1, { filter: "status = \"new\"" }),
-          pb.collection("officers").getList(1, 1, { filter: "status = \"active\"" }),
+          getNewsAdminList(1, 1, "published=true"),
+          getEventsAdminList(1, 1, "date >= now()"),
+          getContactMessages(1, 1, "status = \"new\""),
+          getOfficersAdminList(1, 1, "status = \"active\""),
         ]);
 
         setSummary({
@@ -219,7 +239,7 @@ export default function App() {
     }
 
     void loadSummary();
-  }, [authenticated, pb]);
+  }, [authenticated]);
 
   useEffect(() => {
     if (!authenticated) return;
@@ -344,7 +364,10 @@ export default function App() {
     if (!canLogin) return;
 
     try {
-      await pb.admins.authWithPassword(email, password);
+      const { error } = await adminSignIn(email, password);
+      if (error) {
+        throw error;
+      }
       setAuthenticated(true);
       setSection("dashboard");
     } catch (error) {
@@ -354,8 +377,12 @@ export default function App() {
     }
   }
 
-  function handleLogout() {
-    pb.authStore.clear();
+  async function handleLogout() {
+    try {
+      await adminSignOut();
+    } catch (error) {
+      console.error("Failed to sign out", error);
+    }
     setAuthenticated(false);
     setSummary(initialSummary);
     setSection("dashboard");
@@ -1122,7 +1149,7 @@ export default function App() {
                 <div className="news-form-grid">
                   <label className="field-group">
                     <span>Kode Pangkat</span>
-                    <input type="text" value={officerDraft.rankCode} onChange={(event) => setOfficerDraft((prev) => ({ ...prev, rankCode: event.target.value }))} placeholder="Contoh: Kol" />
+                    <input type="text" value={officerDraft.rank_code} onChange={(event) => setOfficerDraft((prev) => ({ ...prev, rank_code: event.target.value }))} placeholder="Contoh: Kol" />
                   </label>
                   <label className="field-group">
                     <span>Nama Lengkap</span>
@@ -1165,11 +1192,11 @@ export default function App() {
                   </label>
                   <label className="field-group">
                     <span>Mulai</span>
-                    <input type="date" value={officerDraft.termStart} onChange={(event) => setOfficerDraft((prev) => ({ ...prev, termStart: event.target.value }))} />
+                    <input type="date" value={officerDraft.term_start} onChange={(event) => setOfficerDraft((prev) => ({ ...prev, term_start: event.target.value }))} />
                   </label>
                   <label className="field-group">
                     <span>Selesai</span>
-                    <input type="date" value={officerDraft.termEnd} onChange={(event) => setOfficerDraft((prev) => ({ ...prev, termEnd: event.target.value }))} />
+                    <input type="date" value={officerDraft.term_end} onChange={(event) => setOfficerDraft((prev) => ({ ...prev, term_end: event.target.value }))} />
                   </label>
                   <label className="field-group full-width">
                     <span>Bio (ID)</span>
@@ -1270,7 +1297,7 @@ export default function App() {
                   </label>
                   <label className="field-group">
                     <span>Tanggal Foto</span>
-                    <input type="date" value={galleryDraft.takenAt} onChange={(event) => setGalleryDraft((prev) => ({ ...prev, takenAt: event.target.value }))} />
+                    <input type="date" value={galleryDraft.taken_at} onChange={(event) => setGalleryDraft((prev) => ({ ...prev, taken_at: event.target.value }))} />
                   </label>
                   <label className="field-group">
                     <span>Urutan</span>
@@ -1307,7 +1334,7 @@ export default function App() {
                           <tr key={item.id}>
                             <td>{item.image}</td>
                             <td>{item.caption.id || item.caption.en}</td>
-                            <td>{formatShortDate(item.takenAt)}</td>
+                            <td>{formatShortDate(item.taken_at)}</td>
                             <td className="news-actions">
                               <button className="button-secondary" type="button" onClick={() => openGalleryEditor(item)}>Edit</button>
                               <button className="button-secondary" type="button" onClick={() => handleDeleteGallery(item.id ?? "")}>Delete</button>
@@ -1354,11 +1381,11 @@ export default function App() {
                   </label>
                   <label className="field-group full-width">
                     <span>URL File</span>
-                    <input type="text" value={pressKitDraft.fileAsset} onChange={(event) => setPressKitDraft((prev) => ({ ...prev, fileAsset: event.target.value }))} placeholder="https://example.com/file.pdf" />
+                    <input type="text" value={pressKitDraft.file_asset} onChange={(event) => setPressKitDraft((prev) => ({ ...prev, file_asset: event.target.value }))} placeholder="https://example.com/file.pdf" />
                   </label>
                   <label className="field-group">
                     <span>Ukuran Label</span>
-                    <input type="text" value={pressKitDraft.sizeLabel} onChange={(event) => setPressKitDraft((prev) => ({ ...prev, sizeLabel: event.target.value }))} placeholder="PDF, 2MB" />
+                    <input type="text" value={pressKitDraft.size_label} onChange={(event) => setPressKitDraft((prev) => ({ ...prev, size_label: event.target.value }))} placeholder="PDF, 2MB" />
                   </label>
                   <label className="field-group">
                     <span>Tipe</span>
@@ -1399,8 +1426,8 @@ export default function App() {
                         {pressKitItems.map((item) => (
                           <tr key={item.id}>
                             <td>{item.name}</td>
-                            <td>{item.fileAsset}</td>
-                            <td>{item.sizeLabel}</td>
+                            <td>{item.file_asset}</td>
+                            <td>{item.size_label}</td>
                             <td>{item.type}</td>
                             <td className="news-actions">
                               <button className="button-secondary" type="button" onClick={() => openPressKitEditor(item)}>Edit</button>
@@ -1453,7 +1480,7 @@ export default function App() {
                     </thead>
                     <tbody>
                       {contacts.map((item) => (
-                        <tr key={item.id ?? `${item.email}-${item.createdAt}`}>
+                        <tr key={item.id ?? `${item.email}-${item.created_at}`}>
                           <td>{item.name}</td>
                           <td>{item.email}</td>
                           <td>{item.org}</td>
@@ -1462,7 +1489,7 @@ export default function App() {
                               {item.status}
                             </span>
                           </td>
-                          <td>{new Date(item.createdAt || item.created || Date.now()).toLocaleDateString("id-ID")}</td>
+                          <td>{new Date(item.created_at || item.created || Date.now()).toLocaleDateString("id-ID")}</td>
                           <td>
                             <button className="button-secondary" type="button" onClick={() => handleMarkRead(item.id ?? "")} disabled={item.status !== "new"}>
                               Tandai Dibaca

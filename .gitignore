@@ -20,8 +20,6 @@ dist-ssr
 .wrangler/
 .dev.vars
 
-# PocketBase runtime data
-backend/pb_data/
 
 # Editor directories and files
 .vscode/*

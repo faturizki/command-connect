@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { getOfficers } from "@shared/pb";
+import { getOfficers } from "@shared/supabase";
 
 export const Route = createFileRoute("/struktur")({
   head: () => ({
@@ -49,7 +49,7 @@ function StrukturPage() {
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-3">
-                  <span className="eyebrow text-accent-red">{o.rankCode}</span>
+                  <span className="eyebrow text-accent-red">{o.rank_code}</span>
                   <span className="bg-emerald-100 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-emerald-800">
                     {t("active")}
                   </span>
@@ -60,7 +60,7 @@ function StrukturPage() {
                 <p className="mt-1 text-base text-muted-foreground">{o.position.name[lang]}</p>
                 <div className="mt-4 border-t border-border pt-4 font-mono text-xs text-muted-foreground">
                   {lang === "id" ? "MENJABAT SEJAK" : "SERVING SINCE"} ·{" "}
-                  {formatMonth(o.termStart, lang)}
+                  {formatMonth(o.term_start, lang)}
                 </div>
               </div>
             </article>
@@ -81,12 +81,12 @@ function StrukturPage() {
               {active.map((o) => (
                 <tr key={o.id} className="border-t border-border">
                   <td className="px-4 py-3 font-mono text-xs font-semibold uppercase text-accent-red">
-                    {o.rankCode}
+                    {o.rank_code}
                   </td>
                   <td className="px-4 py-3 font-semibold">{o.name}</td>
                   <td className="px-4 py-3 text-muted-foreground">{o.position.name[lang]}</td>
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
-                    {formatMonth(o.termStart, lang)}
+                    {formatMonth(o.term_start, lang)}
                   </td>
                 </tr>
               ))}

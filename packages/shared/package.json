@@ -5,6 +5,9 @@
   "sideEffects": false,
   "main": "types.ts",
   "exports": {
-    ".": "./types.ts"
+    ".": "./types.ts",
+    "./supabase": "./supabase.ts",
+    "./r2": "./r2.ts",
+    "./types": "./types.ts"
   }
 }

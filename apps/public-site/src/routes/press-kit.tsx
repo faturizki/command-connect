@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Download, FileText } from "lucide-react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { getPocketBaseClient, getPressKit } from "@shared/pb";
+import { getPressKit } from "@shared/supabase";
+import { getAssetUrl } from "@shared/r2";
 
 export const Route = createFileRoute("/press-kit")({
   head: () => ({
@@ -20,7 +21,6 @@ export const Route = createFileRoute("/press-kit")({
 
 function PressKitPage() {
   const { t, lang } = useI18n();
-  const pbClient = getPocketBaseClient();
   const { data } = useQuery({ queryKey: ["pressKit"], queryFn: () => getPressKit() });
   const pressKit = data?.items ?? [];
 
@@ -52,12 +52,12 @@ function PressKitPage() {
                 <div>
                   <div className="font-display font-semibold">{item.name}</div>
                   <div className="font-mono text-xs text-muted-foreground">
-                    {item.type} · {item.sizeLabel}
+                    {item.type} · {item.size_label}
                   </div>
                 </div>
               </div>
               <a
-                href={pbClient.getFileUrl(item, "fileAsset")}
+                href={getAssetUrl(item.file_asset)}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 border border-border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-accent-red hover:text-white hover:border-accent-red"
