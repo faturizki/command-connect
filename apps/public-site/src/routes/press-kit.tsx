@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Download, FileText } from "lucide-react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { pressKit } from "@/lib/mock-data";
+import { getPocketBaseClient, getPressKit } from "@shared/pb";
 
 export const Route = createFileRoute("/press-kit")({
   head: () => ({
@@ -19,6 +20,10 @@ export const Route = createFileRoute("/press-kit")({
 
 function PressKitPage() {
   const { t, lang } = useI18n();
+  const pbClient = getPocketBaseClient();
+  const { data } = useQuery(["pressKit"], () => getPressKit());
+  const pressKit = data?.items ?? [];
+
   return (
     <SiteLayout>
       <SectionHeader
@@ -47,16 +52,18 @@ function PressKitPage() {
                 <div>
                   <div className="font-display font-semibold">{item.name}</div>
                   <div className="font-mono text-xs text-muted-foreground">
-                    {item.type} · {item.size}
+                    {item.type} · {item.sizeLabel}
                   </div>
                 </div>
               </div>
-              <button
-                type="button"
+              <a
+                href={pbClient.getFileUrl(item, "fileAsset")}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center gap-2 border border-border px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-accent-red hover:text-white hover:border-accent-red"
               >
                 <Download className="h-4 w-4" /> {t("download")}
-              </button>
+              </a>
             </div>
           ))}
         </div>

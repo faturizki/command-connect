@@ -37,3 +37,7 @@ backend/pb_data/
 # Build outputs
 apps/public-site/dist
 apps/admin/dist
+
+# Environment files
+.env
+.env.*

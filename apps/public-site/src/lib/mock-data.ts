@@ -1,4 +1,4 @@
-// Dummy data for the public-facing site. Swap with Lovable Cloud later.
+// Dummy data for the public-facing site. Swap with PocketBase later.
 
 export type Officer = {
   id: string;
@@ -158,6 +158,7 @@ export const events: EventItem[] = [
 
 export type NewsItem = {
   id: string;
+  slug: string;
   date: string;
   category: { id: string; en: string };
   title: { id: string; en: string };
@@ -168,6 +169,7 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     id: "n1",
+    slug: "bakti-sosial-di-wilayah-terdampak-bencana",
     date: "2026-06-01",
     category: { id: "Berita", en: "News" },
     title: {
@@ -182,6 +184,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "n2",
+    slug: "modernisasi-komunikasi-publik-berbasis-digital",
     date: "2026-06-01",
     category: { id: "Rilis Pers", en: "Press Release" },
     title: {
@@ -196,6 +199,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "n3",
+    slug: "latihan-gabungan-komunikasi-antar-satuan",
     date: "2026-05-24",
     category: { id: "Berita", en: "News" },
     title: {
@@ -210,6 +214,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "n4",
+    slug: "pernyataan-resmi-operasi-kemanusiaan-selesai",
     date: "2026-05-12",
     category: { id: "Rilis Pers", en: "Press Release" },
     title: {

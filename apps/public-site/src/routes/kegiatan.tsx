@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { events } from "@/lib/mock-data";
+import { getEvents } from "@shared/pb";
 
 export const Route = createFileRoute("/kegiatan")({
   head: () => ({
@@ -19,7 +20,8 @@ export const Route = createFileRoute("/kegiatan")({
 
 function KegiatanPage() {
   const { t, lang } = useI18n();
-  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
+  const { data } = useQuery(["events"], () => getEvents());
+  const sorted = [...(data?.items ?? [])].sort((a, b) => a.date.localeCompare(b.date));
 
   return (
     <SiteLayout>

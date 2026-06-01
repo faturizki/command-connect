@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StrukturRouteImport } from './routes/struktur'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as RiwayatRouteImport } from './routes/riwayat'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as PressKitRouteImport } from './routes/press-kit'
@@ -18,10 +19,16 @@ import { Route as KegiatanRouteImport } from './routes/kegiatan'
 import { Route as GaleriRouteImport } from './routes/galeri'
 import { Route as BeritaRouteImport } from './routes/berita'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BeritaSlugRouteImport } from './routes/berita/$slug'
 
 const StrukturRoute = StrukturRouteImport.update({
   id: '/struktur',
   path: '/struktur',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RiwayatRoute = RiwayatRouteImport.update({
@@ -64,40 +71,51 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BeritaSlugRoute = BeritaSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BeritaRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/berita': typeof BeritaRoute
+  '/berita': typeof BeritaRouteWithChildren
   '/galeri': typeof GaleriRoute
   '/kegiatan': typeof KegiatanRoute
   '/kontak': typeof KontakRoute
   '/press-kit': typeof PressKitRoute
   '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
+  '/search': typeof SearchRoute
   '/struktur': typeof StrukturRoute
+  '/berita/$slug': typeof BeritaSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/berita': typeof BeritaRoute
+  '/berita': typeof BeritaRouteWithChildren
   '/galeri': typeof GaleriRoute
   '/kegiatan': typeof KegiatanRoute
   '/kontak': typeof KontakRoute
   '/press-kit': typeof PressKitRoute
   '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
+  '/search': typeof SearchRoute
   '/struktur': typeof StrukturRoute
+  '/berita/$slug': typeof BeritaSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/berita': typeof BeritaRoute
+  '/berita': typeof BeritaRouteWithChildren
   '/galeri': typeof GaleriRoute
   '/kegiatan': typeof KegiatanRoute
   '/kontak': typeof KontakRoute
   '/press-kit': typeof PressKitRoute
   '/profil': typeof ProfilRoute
   '/riwayat': typeof RiwayatRoute
+  '/search': typeof SearchRoute
   '/struktur': typeof StrukturRoute
+  '/berita/$slug': typeof BeritaSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -110,7 +128,9 @@ export interface FileRouteTypes {
     | '/press-kit'
     | '/profil'
     | '/riwayat'
+    | '/search'
     | '/struktur'
+    | '/berita/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -121,7 +141,9 @@ export interface FileRouteTypes {
     | '/press-kit'
     | '/profil'
     | '/riwayat'
+    | '/search'
     | '/struktur'
+    | '/berita/$slug'
   id:
     | '__root__'
     | '/'
@@ -132,18 +154,21 @@ export interface FileRouteTypes {
     | '/press-kit'
     | '/profil'
     | '/riwayat'
+    | '/search'
     | '/struktur'
+    | '/berita/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BeritaRoute: typeof BeritaRoute
+  BeritaRoute: typeof BeritaRouteWithChildren
   GaleriRoute: typeof GaleriRoute
   KegiatanRoute: typeof KegiatanRoute
   KontakRoute: typeof KontakRoute
   PressKitRoute: typeof PressKitRoute
   ProfilRoute: typeof ProfilRoute
   RiwayatRoute: typeof RiwayatRoute
+  SearchRoute: typeof SearchRoute
   StrukturRoute: typeof StrukturRoute
 }
 
@@ -154,6 +179,13 @@ declare module '@tanstack/react-router' {
       path: '/struktur'
       fullPath: '/struktur'
       preLoaderRoute: typeof StrukturRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/riwayat': {
@@ -212,18 +244,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/berita/$slug': {
+      id: '/berita/$slug'
+      path: '/$slug'
+      fullPath: '/berita/$slug'
+      preLoaderRoute: typeof BeritaSlugRouteImport
+      parentRoute: typeof BeritaRoute
+    }
   }
 }
 
+interface BeritaRouteChildren {
+  BeritaSlugRoute: typeof BeritaSlugRoute
+}
+
+const BeritaRouteChildren: BeritaRouteChildren = {
+  BeritaSlugRoute: BeritaSlugRoute,
+}
+
+const BeritaRouteWithChildren =
+  BeritaRoute._addFileChildren(BeritaRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BeritaRoute: BeritaRoute,
+  BeritaRoute: BeritaRouteWithChildren,
   GaleriRoute: GaleriRoute,
   KegiatanRoute: KegiatanRoute,
   KontakRoute: KontakRoute,
   PressKitRoute: PressKitRoute,
   ProfilRoute: ProfilRoute,
   RiwayatRoute: RiwayatRoute,
+  SearchRoute: SearchRoute,
   StrukturRoute: StrukturRoute,
 }
 export const routeTree = rootRouteImport

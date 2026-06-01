@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { officers } from "@/lib/mock-data";
+import { getOfficers } from "@shared/pb";
 
 export const Route = createFileRoute("/riwayat")({
   head: () => ({
@@ -18,7 +19,8 @@ export const Route = createFileRoute("/riwayat")({
 
 function RiwayatPage() {
   const { t, lang } = useI18n();
-  const past = [...officers.filter((o) => o.status === "past")].sort((a, b) =>
+  const { data } = useQuery(["officers", "past"], () => getOfficers("past"));
+  const past = [...(data?.items ?? [])].sort((a, b) =>
     (b.termEnd ?? "").localeCompare(a.termEnd ?? "")
   );
 

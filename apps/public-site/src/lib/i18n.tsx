@@ -12,6 +12,7 @@ export const dict = {
   nav_events: { id: "Kegiatan", en: "Events" },
   nav_news: { id: "Berita & Pers", en: "News & Press" },
   nav_gallery: { id: "Galeri", en: "Gallery" },
+  nav_search: { id: "Cari", en: "Search" },
   nav_press_kit: { id: "Press Kit", en: "Press Kit" },
   nav_profile: { id: "Profil Satuan", en: "Unit Profile" },
   nav_contact: { id: "Kontak", en: "Contact" },
@@ -46,6 +47,10 @@ export const dict = {
   download: { id: "Unduh", en: "Download" },
   active: { id: "Aktif", en: "Active" },
   past: { id: "Purna / Pindah Satuan", en: "Past / Transferred" },
+  search_placeholder: { id: "Cari berita atau kegiatan...", en: "Search news or events..." },
+  search_button: { id: "Cari", en: "Search" },
+  search_label: { id: "Pencarian", en: "Search" },
+  sec_search: { id: "Pencarian", en: "Search" },
 
   // Profile
   profile_lead: {

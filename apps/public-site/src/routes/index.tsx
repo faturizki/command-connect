@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, ArrowUpRight, Calendar, MapPin } from "lucide-react";
 import heroImg from "@/assets/hero-hq.jpg";
 import { SiteLayout } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { events, news, officers } from "@/lib/mock-data";
+import { getEvents, getNews, getOfficers } from "@shared/pb";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,9 +27,13 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { t, lang } = useI18n();
-  const activeLeaders = officers.filter((o) => o.status === "active").slice(0, 3);
-  const upcoming = [...events].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 2);
-  const topNews = news.slice(0, 3);
+  const newsQuery = useQuery(["news", lang], () => getNews(lang, 1, 3));
+  const eventsQuery = useQuery(["events", "upcoming"], () => getEvents(true));
+  const officersQuery = useQuery(["officers", "active"], () => getOfficers("active"));
+
+  const activeLeaders = officersQuery.data?.items ?? [];
+  const upcoming = [...(eventsQuery.data?.items ?? [])].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 2);
+  const topNews = newsQuery.data?.items ?? [];
 
   return (
     <SiteLayout>
@@ -96,7 +101,7 @@ function Home() {
           {topNews.map((n, i) => (
             <Link
               key={n.id}
-              to="/berita"
+              to={`/berita/${n.slug ?? n.id}`}
               className={`group block ${i === 0 ? "md:col-span-3" : ""}`}
             >
               <div className="overflow-hidden bg-muted">

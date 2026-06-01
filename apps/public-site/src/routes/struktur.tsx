@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, SectionHeader } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { officers } from "@/lib/mock-data";
+import { getOfficers } from "@shared/pb";
 
 export const Route = createFileRoute("/struktur")({
   head: () => ({
@@ -18,7 +19,8 @@ export const Route = createFileRoute("/struktur")({
 
 function StrukturPage() {
   const { t, lang } = useI18n();
-  const active = officers.filter((o) => o.status === "active");
+  const { data } = useQuery(["officers", "active"], () => getOfficers("active"));
+  const active = data?.items ?? [];
 
   return (
     <SiteLayout>

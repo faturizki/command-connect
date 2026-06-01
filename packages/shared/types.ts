@@ -84,3 +84,19 @@ export interface SettingRecord {
   key: string;
   value: Record<string, unknown>;
 }
+
+export interface SearchResultItem {
+  id?: string;
+  title: LocalizedText;
+  excerpt?: LocalizedText;
+  category?: LocalizedText;
+  cover?: string;
+  date?: string;
+  slug?: string;
+  location?: LocalizedText;
+}
+
+export interface SearchResults {
+  news: SearchResultItem[];
+  events: SearchResultItem[];
+}
