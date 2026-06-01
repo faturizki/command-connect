@@ -9,8 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StrukturRouteImport } from './routes/struktur'
+import { Route as RiwayatRouteImport } from './routes/riwayat'
+import { Route as ProfilRouteImport } from './routes/profil'
+import { Route as PressKitRouteImport } from './routes/press-kit'
+import { Route as KontakRouteImport } from './routes/kontak'
+import { Route as KegiatanRouteImport } from './routes/kegiatan'
+import { Route as GaleriRouteImport } from './routes/galeri'
+import { Route as BeritaRouteImport } from './routes/berita'
 import { Route as IndexRouteImport } from './routes/index'
 
+const StrukturRoute = StrukturRouteImport.update({
+  id: '/struktur',
+  path: '/struktur',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RiwayatRoute = RiwayatRouteImport.update({
+  id: '/riwayat',
+  path: '/riwayat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressKitRoute = PressKitRouteImport.update({
+  id: '/press-kit',
+  path: '/press-kit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontakRoute = KontakRouteImport.update({
+  id: '/kontak',
+  path: '/kontak',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KegiatanRoute = KegiatanRouteImport.update({
+  id: '/kegiatan',
+  path: '/kegiatan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriRoute = GaleriRouteImport.update({
+  id: '/galeri',
+  path: '/galeri',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeritaRoute = BeritaRouteImport.update({
+  id: '/berita',
+  path: '/berita',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +67,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/berita': typeof BeritaRoute
+  '/galeri': typeof GaleriRoute
+  '/kegiatan': typeof KegiatanRoute
+  '/kontak': typeof KontakRoute
+  '/press-kit': typeof PressKitRoute
+  '/profil': typeof ProfilRoute
+  '/riwayat': typeof RiwayatRoute
+  '/struktur': typeof StrukturRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/berita': typeof BeritaRoute
+  '/galeri': typeof GaleriRoute
+  '/kegiatan': typeof KegiatanRoute
+  '/kontak': typeof KontakRoute
+  '/press-kit': typeof PressKitRoute
+  '/profil': typeof ProfilRoute
+  '/riwayat': typeof RiwayatRoute
+  '/struktur': typeof StrukturRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/berita': typeof BeritaRoute
+  '/galeri': typeof GaleriRoute
+  '/kegiatan': typeof KegiatanRoute
+  '/kontak': typeof KontakRoute
+  '/press-kit': typeof PressKitRoute
+  '/profil': typeof ProfilRoute
+  '/riwayat': typeof RiwayatRoute
+  '/struktur': typeof StrukturRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/berita'
+    | '/galeri'
+    | '/kegiatan'
+    | '/kontak'
+    | '/press-kit'
+    | '/profil'
+    | '/riwayat'
+    | '/struktur'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/berita'
+    | '/galeri'
+    | '/kegiatan'
+    | '/kontak'
+    | '/press-kit'
+    | '/profil'
+    | '/riwayat'
+    | '/struktur'
+  id:
+    | '__root__'
+    | '/'
+    | '/berita'
+    | '/galeri'
+    | '/kegiatan'
+    | '/kontak'
+    | '/press-kit'
+    | '/profil'
+    | '/riwayat'
+    | '/struktur'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BeritaRoute: typeof BeritaRoute
+  GaleriRoute: typeof GaleriRoute
+  KegiatanRoute: typeof KegiatanRoute
+  KontakRoute: typeof KontakRoute
+  PressKitRoute: typeof PressKitRoute
+  ProfilRoute: typeof ProfilRoute
+  RiwayatRoute: typeof RiwayatRoute
+  StrukturRoute: typeof StrukturRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/struktur': {
+      id: '/struktur'
+      path: '/struktur'
+      fullPath: '/struktur'
+      preLoaderRoute: typeof StrukturRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/riwayat': {
+      id: '/riwayat'
+      path: '/riwayat'
+      fullPath: '/riwayat'
+      preLoaderRoute: typeof RiwayatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press-kit': {
+      id: '/press-kit'
+      path: '/press-kit'
+      fullPath: '/press-kit'
+      preLoaderRoute: typeof PressKitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kontak': {
+      id: '/kontak'
+      path: '/kontak'
+      fullPath: '/kontak'
+      preLoaderRoute: typeof KontakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kegiatan': {
+      id: '/kegiatan'
+      path: '/kegiatan'
+      fullPath: '/kegiatan'
+      preLoaderRoute: typeof KegiatanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeri': {
+      id: '/galeri'
+      path: '/galeri'
+      fullPath: '/galeri'
+      preLoaderRoute: typeof GaleriRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/berita': {
+      id: '/berita'
+      path: '/berita'
+      fullPath: '/berita'
+      preLoaderRoute: typeof BeritaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +217,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BeritaRoute: BeritaRoute,
+  GaleriRoute: GaleriRoute,
+  KegiatanRoute: KegiatanRoute,
+  KontakRoute: KontakRoute,
+  PressKitRoute: PressKitRoute,
+  ProfilRoute: ProfilRoute,
+  RiwayatRoute: RiwayatRoute,
+  StrukturRoute: StrukturRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
