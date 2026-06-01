@@ -14,6 +14,8 @@
     "preview:admin": "cd apps/admin && npm run preview",
     "lint": "cd apps/public-site && npm run lint",
     "lint:admin": "cd apps/admin && npm run lint",
+    "type-check": "cd apps/public-site && npx tsc --noEmit",
+    "type-check:admin": "cd apps/admin && npx tsc --noEmit",
     "format": "cd apps/public-site && npm run format",
     "format:admin": "cd apps/admin && npm run format",
     "test": "vitest run",

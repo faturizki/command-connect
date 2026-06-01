@@ -1,0 +1,24 @@
+# Cloudflare Pages Configuration for Command Connect Public Site
+
+name = "command-connect-public"
+main = "dist/server.mjs"
+compatibility_date = "2024-12-16"
+compatibility_flags = ["nodejs_compat"]
+
+# Build configuration
+[build]
+command = "cd apps/public-site && bun run build"
+cwd = "./"
+watch_paths = []
+
+[build.upload]
+format = "service-worker"
+
+# Environment variables for production
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+# Routes configuration
+[[routes]]
+pattern = "https://command-connect.id/*"
+zone_name = "command-connect.id"

@@ -8,4 +8,14 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 4173,
   },
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    minify: "terser",
+  },
+  // Support for GitHub Pages deployment
+  // If deploying to a subdomain like user.github.io/command-connect-admin,
+  // set base: "/command-connect-admin/"
+  // For command-connect.id/admin, set base: "/admin/"
+  base: "./",
 });

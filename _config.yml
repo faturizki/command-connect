@@ -1,0 +1,11 @@
+# GitHub Pages configuration for Admin Panel
+
+theme: null  # Using custom HTML instead of Jekyll theme
+plugins: []  # No Jekyll plugins
+
+# Prevent Jekyll from processing the output
+exclude:
+  - node_modules
+  - bun.lock
+  - package-lock.json
+  - "*.md"
