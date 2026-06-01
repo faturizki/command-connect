@@ -17,6 +17,7 @@ export type Position = {
 
 export interface Officer {
   id?: string;
+  tenant_id: string;
   rank_code: string;
   rank: Rank;
   name: string;
@@ -31,6 +32,7 @@ export interface Officer {
 
 export interface NewsArticle {
   id?: string;
+  tenant_id: string;
   title: LocalizedText;
   excerpt: LocalizedText;
   body: LocalizedText;
@@ -43,6 +45,7 @@ export interface NewsArticle {
 
 export interface EventItem {
   id?: string;
+  tenant_id: string;
   title: LocalizedText;
   excerpt: LocalizedText;
   date: string;
@@ -54,6 +57,7 @@ export interface EventItem {
 
 export interface GalleryItem {
   id?: string;
+  tenant_id: string;
   image: string;
   caption: LocalizedText;
   taken_at: string;
@@ -62,6 +66,7 @@ export interface GalleryItem {
 
 export interface PressKitItem {
   id?: string;
+  tenant_id: string;
   name: string;
   file_asset: string;
   size_label: string;
@@ -71,6 +76,7 @@ export interface PressKitItem {
 
 export interface ContactMessage {
   id?: string;
+  tenant_id: string;
   name: string;
   org: string;
   email: string;
@@ -82,6 +88,7 @@ export interface ContactMessage {
 
 export interface SettingRecord {
   id?: string;
+  tenant_id: string;
   key: string;
   value: Record<string, unknown>;
 }
@@ -100,4 +107,21 @@ export interface SearchResultItem {
 export interface SearchResults {
   news: SearchResultItem[];
   events: SearchResultItem[];
+}
+
+export interface Tenant {
+  id: string;
+  slug: string;
+  name: string;
+  plan: string;
+  active: boolean;
+  created_at: string;
+}
+
+export interface TenantUser {
+  id: string;
+  tenant_id: string;
+  user_id: string;
+  role: "admin" | "editor" | "viewer";
+  created_at: string;
 }

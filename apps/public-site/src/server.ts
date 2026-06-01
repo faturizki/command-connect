@@ -3,6 +3,7 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { getPublishedNewsFeed, getAllPublishedNews } from "@shared/supabase";
+import { getTenantSlug } from "@shared/tenant";
 
 const SITE_URL = process.env.VITE_APP_URL || "http://localhost:4173";
 
@@ -45,11 +46,11 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/rss.xml") {
-      return await handleRss();
+      return await handleRss(request);
     }
 
     if (url.pathname === "/sitemap.xml") {
-      return await handleSitemap();
+      return await handleSitemap(request);
     }
 
     try {
@@ -66,8 +67,9 @@ export default {
   },
 };
 
-async function handleRss() {
-  const news = await getPublishedNewsFeed("en", 20);
+async function handleRss(request: Request) {
+  const tenantSlug = getTenantSlug(new URL(request.url).hostname) ?? undefined;
+  const news = await getPublishedNewsFeed("en", 20, tenantSlug);
   const itemsXml = news.items
     .map((item) => {
       const itemLink = `${SITE_URL}/berita/${item.slug ?? item.id}`;
@@ -104,8 +106,9 @@ async function handleRss() {
   });
 }
 
-async function handleSitemap() {
-  const newsItems = await getAllPublishedNews();
+async function handleSitemap(request: Request) {
+  const tenantSlug = getTenantSlug(new URL(request.url).hostname) ?? undefined;
+  const newsItems = await getAllPublishedNews(tenantSlug);
   const staticPaths = [
     "/",
     "/berita",

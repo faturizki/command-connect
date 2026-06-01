@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ContactMessage, EventItem, GalleryItem, NewsArticle, Officer, PressKitItem } from "@shared/types";
+import { getCurrentTenantSlug } from "@shared/tenant";
 import {
   adminSignIn,
   adminSignOut,
@@ -19,7 +20,6 @@ import {
   getNewsAdminList,
   getOfficersAdminList,
   getPressKitAdminList,
-  getSupabaseClient,
   markContactRead,
   updateEvent,
   updateGalleryItem,
@@ -27,6 +27,7 @@ import {
   updateOfficer,
   updatePressKitItem,
 } from "@shared/supabase";
+import { useAdminAuth } from "./lib/auth";
 
 type DashboardSummary = {
   totalNews: number;
@@ -111,11 +112,10 @@ function formatShortDate(iso: string) {
 }
 
 export default function App() {
-  const supabase = getSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const { session, role, tenantId, tenantSlug, loading: authLoading, error: authError } = useAdminAuth();
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [summary, setSummary] = useState<DashboardSummary>(initialSummary);
   const [section, setSection] = useState<AdminSection>("dashboard");
@@ -187,42 +187,16 @@ export default function App() {
   );
 
   useEffect(() => {
-    let mounted = true;
-
-    async function initAuth() {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error("Failed to get auth session", error);
-        return;
-      }
-      if (!mounted) return;
-      setAuthenticated(!!data.session);
-    }
-
-    initAuth();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!mounted) return;
-      setAuthenticated(!!session);
-    });
-
-    return () => {
-      mounted = false;
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabase]);
-
-  useEffect(() => {
-    if (!authenticated) return;
+    if (!session || !role) return;
 
     async function loadSummary() {
       setLoadingSummary(true);
       try {
         const [newsCount, eventsCount, contactsCount, officersCount] = await Promise.all([
-          getNewsAdminList(1, 1, "published=true"),
-          getEventsAdminList(1, 1, "date >= now()"),
-          getContactMessages(1, 1, "status = \"new\""),
-          getOfficersAdminList(1, 1, "status = \"active\""),
+          getNewsAdminList(1, 1, true),
+          getEventsAdminList(1, 1, true),
+          getContactMessages(1, 1, "new"),
+          getOfficersAdminList(1, 1, "active"),
         ]);
 
         setSummary({
@@ -239,10 +213,10 @@ export default function App() {
     }
 
     void loadSummary();
-  }, [authenticated]);
+  }, [session, role]);
 
   useEffect(() => {
-    if (!authenticated) return;
+    if (!session || !role) return;
 
     async function loadNewsList() {
       setNewsLoading(true);
@@ -356,24 +330,19 @@ export default function App() {
       default:
         break;
     }
-  }, [authenticated, section, newsPage, eventPage, officersPage, galleryPage, pressKitPage, contactsPage]);
+  }, [session, role, section, newsPage, eventPage, officersPage, galleryPage, pressKitPage, contactsPage]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setAuthError(null);
+    setLoginError(null);
     if (!canLogin) return;
 
     try {
-      const { error } = await adminSignIn(email, password);
-      if (error) {
-        throw error;
-      }
-      setAuthenticated(true);
+      await adminSignIn(email, password);
       setSection("dashboard");
     } catch (error) {
       console.error(error);
-      setAuthError("Login gagal. Periksa email dan password Anda.");
-      setAuthenticated(false);
+      setLoginError("Login gagal. Periksa email dan password Anda.");
     }
   }
 
@@ -383,7 +352,6 @@ export default function App() {
     } catch (error) {
       console.error("Failed to sign out", error);
     }
-    setAuthenticated(false);
     setSummary(initialSummary);
     setSection("dashboard");
   }
@@ -690,12 +658,24 @@ export default function App() {
     }
   }
 
-  if (!authenticated) {
+  if (authLoading) {
+    return (
+      <div className="admin-shell">
+        <main className="login-panel">
+          <h1>Command Connect Admin</h1>
+          <p>Memuat autentikasi...</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (!session || !role) {
     return (
       <div className="admin-shell">
         <main className="login-panel">
           <h1>Command Connect Admin</h1>
           <p>Masuk untuk mengelola berita, kegiatan, dan konten situs.</p>
+          <p className="tenant-info">Tenant: {tenantSlug}</p>
           <form onSubmit={handleSubmit} className="login-form">
             <label>
               Email
@@ -717,7 +697,7 @@ export default function App() {
                 required
               />
             </label>
-            {authError ? <p className="auth-error">{authError}</p> : null}
+            {loginError ? <p className="auth-error">{loginError}</p> : authError ? <p className="auth-error">{authError}</p> : null}
             <button type="submit" disabled={!canLogin} className="button-primary">
               Login
             </button>
@@ -731,6 +711,7 @@ export default function App() {
     <div className="admin-shell">
       <aside className="admin-sidebar">
         <div className="brand">Command Connect</div>
+        <div className="tenant-badge">{tenantSlug}</div>
         <nav>
           <button type="button" className={section === "dashboard" ? "active" : ""} onClick={() => setSection("dashboard")}>Dashboard</button>
           <button type="button" className={section === "berita" ? "active" : ""} onClick={() => setSection("berita")}>Berita</button>
