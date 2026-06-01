@@ -1,4 +1,4 @@
-# Analisis Mendalam Codebase & Rencana Migrasi
+# Rencana Migrasi
 # `command-connect` → Cloudflare Pages + Supabase + R2
 
 ---
