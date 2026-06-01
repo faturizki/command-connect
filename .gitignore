@@ -33,3 +33,7 @@ backend/pb_data/
 *.njsproj
 *.sln
 *.sw?
+
+# Build outputs
+apps/public-site/dist
+apps/admin/dist

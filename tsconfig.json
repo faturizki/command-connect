@@ -17,9 +17,16 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./apps/public-site/src/*"],
       "@shared/*": ["./packages/shared/*"]
     }
   },
-  "include": ["apps/public-site/src/**/*.ts", "apps/public-site/src/**/*.tsx", "apps/public-site/vite.config.ts"]
+  "include": [
+    "apps/public-site/src/**/*.ts",
+    "apps/public-site/src/**/*.tsx",
+    "apps/admin/src/**/*.ts",
+    "apps/admin/src/**/*.tsx",
+    "packages/shared/**/*.ts",
+    "apps/public-site/vite.config.ts",
+    "apps/admin/vite.config.ts"
+  ]
 }
