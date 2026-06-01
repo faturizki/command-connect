@@ -39,7 +39,7 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {navItems.slice(0, 7).map((item) => {
+          {navItems.map((item) => {
             const active = pathname === item.to;
             return (
               <Link

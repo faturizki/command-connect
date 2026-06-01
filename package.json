@@ -1,15 +1,21 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "command-connect",
   "private": true,
   "sideEffects": false,
   "type": "module",
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "preview": "vite preview",
-    "lint": "eslint .",
-    "format": "prettier --write ."
+    "dev": "cd apps/public-site && npm run dev",
+    "dev:admin": "cd apps/admin && npm run dev",
+    "build": "cd apps/public-site && npm run build",
+    "build:admin": "cd apps/admin && npm run build",
+    "build:dev": "cd apps/public-site && npm run build -- --mode development",
+    "preview": "cd apps/public-site && npm run preview",
+    "preview:admin": "cd apps/admin && npm run preview",
+    "lint": "cd apps/public-site && npm run lint",
+    "lint:admin": "cd apps/admin && npm run lint",
+    "format": "cd apps/public-site && npm run format",
+    "format:admin": "cd apps/admin && npm run format"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -63,7 +69,8 @@
     "tw-animate-css": "^1.3.4",
     "vaul": "^1.1.2",
     "vite-tsconfig-paths": "^6.0.2",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "pocketbase": "^0.21.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

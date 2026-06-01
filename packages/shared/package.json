@@ -1,0 +1,10 @@
+{
+  "name": "@command-connect/shared",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "main": "types.ts",
+  "exports": {
+    ".": "./types.ts"
+  }
+}
