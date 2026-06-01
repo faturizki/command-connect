@@ -1,6 +1,3 @@
-import React from "react";
-import type { NewsArticle } from "@shared/types";
-
 import React, { useState } from "react";
 import type { NewsArticle } from "@shared/types";
 

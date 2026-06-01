@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VideoRouteImport } from './routes/video'
 import { Route as StrukturRouteImport } from './routes/struktur'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as RiwayatRouteImport } from './routes/riwayat'
@@ -21,6 +22,11 @@ import { Route as BeritaRouteImport } from './routes/berita'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BeritaSlugRouteImport } from './routes/berita/$slug'
 
+const VideoRoute = VideoRouteImport.update({
+  id: '/video',
+  path: '/video',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StrukturRoute = StrukturRouteImport.update({
   id: '/struktur',
   path: '/struktur',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/riwayat': typeof RiwayatRoute
   '/search': typeof SearchRoute
   '/struktur': typeof StrukturRoute
+  '/video': typeof VideoRoute
   '/berita/$slug': typeof BeritaSlugRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/riwayat': typeof RiwayatRoute
   '/search': typeof SearchRoute
   '/struktur': typeof StrukturRoute
+  '/video': typeof VideoRoute
   '/berita/$slug': typeof BeritaSlugRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/riwayat': typeof RiwayatRoute
   '/search': typeof SearchRoute
   '/struktur': typeof StrukturRoute
+  '/video': typeof VideoRoute
   '/berita/$slug': typeof BeritaSlugRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/riwayat'
     | '/search'
     | '/struktur'
+    | '/video'
     | '/berita/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/riwayat'
     | '/search'
     | '/struktur'
+    | '/video'
     | '/berita/$slug'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/riwayat'
     | '/search'
     | '/struktur'
+    | '/video'
     | '/berita/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -170,10 +182,18 @@ export interface RootRouteChildren {
   RiwayatRoute: typeof RiwayatRoute
   SearchRoute: typeof SearchRoute
   StrukturRoute: typeof StrukturRoute
+  VideoRoute: typeof VideoRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/video': {
+      id: '/video'
+      path: '/video'
+      fullPath: '/video'
+      preLoaderRoute: typeof VideoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/struktur': {
       id: '/struktur'
       path: '/struktur'
@@ -276,6 +296,7 @@ const rootRouteChildren: RootRouteChildren = {
   RiwayatRoute: RiwayatRoute,
   SearchRoute: SearchRoute,
   StrukturRoute: StrukturRoute,
+  VideoRoute: VideoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

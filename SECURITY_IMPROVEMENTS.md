@@ -103,7 +103,7 @@ if (!checkRateLimit(rateLimitKey)) {
 
 **File yang Dibuat:**
 - ✨ `packages/shared/rate-limit.ts` (NEW)
-- ✨ `apps/public-site/src/routes/api/contact.post.ts` (NEW)
+- ✨ `apps/public-site/src/server/api/contact.post.ts` (NEW)
 
 ---
 
@@ -160,7 +160,7 @@ if (!validation.isValid) {
 
 **File yang Dibuat/Dimodifikasi:**
 - ✨ `packages/shared/validation.ts` (NEW)
-- ✨ `apps/public-site/src/routes/api/contact.post.ts` (NEW)
+- ✨ `apps/public-site/src/server/api/contact.post.ts` (NEW)
 - 📝 `apps/public-site/src/routes/kontak.tsx` (IMPROVED)
 
 ---
@@ -300,7 +300,7 @@ R2_BUCKET_NAME=your-bucket-name
 
 **File yang Dibuat:**
 - ✨ `packages/shared/presigned-url.ts` (NEW)
-- ✨ `apps/public-site/src/routes/api/r2-presign.post.ts` (NEW)
+- ✨ `apps/public-site/src/server/api/r2-presign.post.ts` (NEW)
 
 ---
 
@@ -311,8 +311,8 @@ R2_BUCKET_NAME=your-bucket-name
 2. ✨ `packages/shared/rate-limit.ts` - Rate limiting
 3. ✨ `packages/shared/presigned-url.ts` - R2 upload handling
 4. ✨ `apps/public-site/src/lib/error-handling.ts` - Error utilities
-5. ✨ `apps/public-site/src/routes/api/contact.post.ts` - Contact API with validation & rate limit
-6. ✨ `apps/public-site/src/routes/api/r2-presign.post.ts` - Presigned URL endpoint
+5. ✨ `apps/public-site/src/server/api/contact.post.ts` - Contact API with validation & rate limit
+6. ✨ `apps/public-site/src/server/api/r2-presign.post.ts` - Presigned URL endpoint
 7. ✨ `.env.example` - Root config template
 8. ✨ `apps/public-site/.env.example` - Public site config template
 9. ✨ `apps/admin/.env.example` - Admin config template

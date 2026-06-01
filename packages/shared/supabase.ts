@@ -108,10 +108,6 @@ export async function adminSignOut() {
   return supabase.auth.signOut();
 }
 
-export function getSupabaseClient() {
-  return supabase;
-}
-
 export async function getNews(lang: Lang, page = 1, perPage = 10, category?: string, tenantSlug?: string | null): Promise<PagedResult<NewsArticle>> {
   const tenantId = await getTenantId(tenantSlug);
   const { data, count, error } = await supabase

@@ -129,7 +129,7 @@ Ketika user mendownload dokumen press kit, watermark otomatis ditambahkan untuk:
 
 ### Files Implementasi
 - `packages/shared/watermark.ts` - **NEW** Watermarking service
-- `apps/public-site/src/routes/api/press-kit/[id].download.ts` - **NEW** Download API
+- `apps/public-site/src/server/api/press-kit/[id].download.ts` - **NEW** Download API
 - Supports environment variables untuk custom config:
   - `WATERMARK_POSITION`, `WATERMARK_OPACITY`, `WATERMARK_TEXT`
   - `WATERMARK_ROTATION`, `WATERMARK_FONT_SIZE`, `WATERMARK_COLOR`
@@ -217,9 +217,9 @@ apps/admin/src/
 apps/public-site/src/
   ├─ routes/video.tsx                   (✅ NEW - Dedicated video page)
   ├─ routes/berita/$slug.tsx            (✅ UPDATED - Hoax claims display)
-  ├─ routes/api/contact.post.ts         (✅ NEW - Validated contact API)
-  ├─ routes/api/r2-presign.post.ts      (✅ NEW - Presigned URL endpoint)
-  ├─ routes/api/press-kit/[id].download.ts (✅ NEW - Watermarked download)
+  ├─ server/api/contact.post.ts         (✅ NEW - Validated contact API)
+  ├─ server/api/r2-presign.post.ts      (✅ NEW - Presigned URL endpoint)
+  ├─ server/api/press-kit/[id].download.ts (✅ NEW - Watermarked download)
   ├─ components/ui/video-gallery.tsx    (✅ Complete - Used in video page)
   ├─ components/ui/hoax-checker-banner.tsx (✅ Complete - Used in berita/$slug)
   ├─ lib/error-handling.ts              (✅ NEW - Error utilities)
