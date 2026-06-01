@@ -108,7 +108,18 @@ async function handleRss(request: Request) {
 
 async function handleSitemap(request: Request) {
   const tenantSlug = getTenantSlug(new URL(request.url).hostname) ?? undefined;
-  const newsItems = await getAllPublishedNews(tenantSlug);
+  let allNewsItems: Array<{ slug?: string; id: string }> = [];
+  let page = 1;
+  let hasMore = true;
+
+  // Fetch all news pages
+  while (hasMore) {
+    const newsPage = await getAllPublishedNews(page, 100, tenantSlug);
+    allNewsItems = allNewsItems.concat(newsPage.items);
+    hasMore = page < newsPage.totalPages;
+    page++;
+  }
+
   const staticPaths = [
     "/",
     "/berita",
@@ -124,7 +135,7 @@ async function handleSitemap(request: Request) {
 
   const urlsXml = [
     ...staticPaths,
-    ...newsItems.map((item) => `/berita/${item.slug ?? item.id}`),
+    ...allNewsItems.map((item) => `/berita/${item.slug ?? item.id}`),
   ]
     .map((path) => `
     <url>

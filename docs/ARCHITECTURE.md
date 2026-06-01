@@ -33,6 +33,11 @@ The shared Supabase layer is located in `packages/shared/supabase.ts`.
 - `getTenantId(tenantSlug)` resolves the current `tenant_id` and caches it.
 - All table queries include `.eq('tenant_id', tenantId)` to enforce tenant isolation.
 
+### Security and RLS
+
+- Tenant isolation must be enforced at the database level using Row Level Security (RLS). Relying solely on `.eq('tenant_id', tenantId)` in application code is unsafe when using client-side anon keys.
+- Configure RLS policies that validate `tenant_id` from the JWT claims or require server-side RPCs/service-role for cross-tenant operations. See `docs/SETUP.md` for example policy snippets.
+
 ### Admin Auth
 
 - `apps/admin` signs in users using Supabase email/password auth.

@@ -111,17 +111,18 @@ export async function getPublishedNewsFeed(lang: Lang, limit = 20, tenantSlug?: 
   return toPagedResult((data ?? []) as NewsArticle[], count, 1, limit);
 }
 
-export async function getAllPublishedNews(tenantSlug?: string | null): Promise<NewsArticle[]> {
+export async function getAllPublishedNews(page = 1, perPage = 100, tenantSlug?: string | null): Promise<PagedResult<NewsArticle>> {
   const tenantId = await getTenantId(tenantSlug);
-  const { data, error } = await supabase
+  const { data, count, error } = await supabase
     .from("news")
-    .select("*")
+    .select("id, slug, date, title, excerpt, cover, category", { count: "exact" })
     .eq("published", true)
     .eq("tenant_id", tenantId)
-    .order("date", { ascending: false });
+    .order("date", { ascending: false })
+    .range((page - 1) * perPage, page * perPage - 1);
 
   if (error) throw error;
-  return (data ?? []) as NewsArticle[];
+  return toPagedResult((data ?? []) as NewsArticle[], count, page, perPage);
 }
 
 export async function getNewsAdminList(page = 1, perPage = 10, publishedOnly = false, tenantSlug?: string | null): Promise<PagedResult<NewsArticle>> {
@@ -521,7 +522,7 @@ export async function searchContent(query: string, lang: Lang, tenantSlug?: stri
       .select("*")
       .eq("tenant_id", tenantId)
       .order("date", { ascending: false })
-      .or(`title->>id.ilike.%${trimmed}%,title->>en.ilike.%${trimmed}%,excerpt->>id.ilike.%${trimmed}%,excerpt->>en.ilike.%${trimmed}%`)
+      .or(buildJsonbSearch(trimmed))
       .range(0, 19),
   ]);
 
@@ -532,4 +533,108 @@ export async function searchContent(query: string, lang: Lang, tenantSlug?: stri
     news: (newsResult.data ?? []) as SearchResults['news'],
     events: (eventsResult.data ?? []) as SearchResults['events'],
   };
+}
+
+// ===== VIDEO FUNCTIONS =====
+export async function getVideos(page = 1, perPage = 10, tenantSlug?: string | null): Promise<PagedResult<VideoItem>> {
+  const tenantId = await getTenantId(tenantSlug);
+  const { data, count, error } = await supabase
+    .from("videos")
+    .select("*", { count: "exact" })
+    .eq("tenant_id", tenantId)
+    .order("published_at", { ascending: false })
+    .range((page - 1) * perPage, page * perPage - 1);
+
+  if (error) throw error;
+  return toPagedResult((data ?? []) as VideoItem[], count, page, perPage);
+}
+
+export async function getVideosAdmin(page = 1, perPage = 10, tenantSlug?: string | null): Promise<PagedResult<VideoItem>> {
+  const tenantId = await getTenantId(tenantSlug);
+  const { data, count, error } = await supabase
+    .from("videos")
+    .select("*", { count: "exact" })
+    .eq("tenant_id", tenantId)
+    .order("order", { ascending: true })
+    .range((page - 1) * perPage, page * perPage - 1);
+
+  if (error) throw error;
+  return toPagedResult((data ?? []) as VideoItem[], count, page, perPage);
+}
+
+export async function createVideo(video: Omit<VideoItem, "id" | "tenant_id">, tenantSlug?: string | null) {
+  const tenantId = await getTenantId(tenantSlug);
+  const { data, error } = await supabase
+    .from("videos")
+    .insert({ ...video, tenant_id: tenantId })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as VideoItem;
+}
+
+export async function updateVideo(id: string, video: Omit<VideoItem, "id" | "tenant_id">, tenantSlug?: string | null) {
+  const tenantId = await getTenantId(tenantSlug);
+  const { data, error } = await supabase
+    .from("videos")
+    .update(video)
+    .eq("id", id)
+    .eq("tenant_id", tenantId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as VideoItem;
+}
+
+export async function deleteVideo(id: string, tenantSlug?: string | null) {
+  const tenantId = await getTenantId(tenantSlug);
+  const { error } = await supabase.from("videos").delete().eq("id", id).eq("tenant_id", tenantId);
+  if (error) throw error;
+}
+
+// ===== HOAX CLAIM FUNCTIONS =====
+export async function getHoaxClaimsByNewsId(newsId: string, tenantSlug?: string | null): Promise<HoaxClaim[]> {
+  const tenantId = await getTenantId(tenantSlug);
+  const { data, error } = await supabase
+    .from("hoax_claims")
+    .select("*")
+    .eq("tenant_id", tenantId)
+    .eq("news_article_id", newsId);
+
+  if (error) throw error;
+  return (data ?? []) as HoaxClaim[];
+}
+
+export async function createHoaxClaim(claim: Omit<HoaxClaim, "id" | "tenant_id">, tenantSlug?: string | null) {
+  const tenantId = await getTenantId(tenantSlug);
+  const { data, error } = await supabase
+    .from("hoax_claims")
+    .insert({ ...claim, tenant_id: tenantId })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as HoaxClaim;
+}
+
+export async function updateHoaxClaim(id: string, claim: Omit<HoaxClaim, "id" | "tenant_id">, tenantSlug?: string | null) {
+  const tenantId = await getTenantId(tenantSlug);
+  const { data, error } = await supabase
+    .from("hoax_claims")
+    .update(claim)
+    .eq("id", id)
+    .eq("tenant_id", tenantId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as HoaxClaim;
+}
+
+export async function deleteHoaxClaim(id: string, tenantSlug?: string | null) {
+  const tenantId = await getTenantId(tenantSlug);
+  const { error } = await supabase.from("hoax_claims").delete().eq("id", id).eq("tenant_id", tenantId);
+  if (error) throw error;
 }

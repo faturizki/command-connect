@@ -125,3 +125,30 @@ export interface TenantUser {
   role: "admin" | "editor" | "viewer";
   created_at: string;
 }
+
+export interface VideoItem {
+  id?: string;
+  tenant_id: string;
+  title: string;
+  youtube_id: string;
+  description?: string;
+  thumbnail_url?: string;
+  published_at?: string;
+  order?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface HoaxClaim {
+  id?: string;
+  tenant_id: string;
+  news_article_id: string;
+  hoax_claim_title: string;
+  hoax_claim_image_url?: string;
+  hoax_claim_source?: string;
+  fact_check_title: string;
+  fact_check_body: string;
+  status: "hoax" | "misinformation" | "partially_true" | "true";
+  created_at?: string;
+  updated_at?: string;
+}

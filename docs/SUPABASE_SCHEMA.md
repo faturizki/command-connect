@@ -86,7 +86,7 @@ Columns:
 - `taken_at`
 - `order`
 
-### `presskit`
+### `press_kit`
 
 Columns:
 
@@ -98,7 +98,7 @@ Columns:
 - `type`
 - `order`
 
-### `contact_messages`
+### `contacts`
 
 Columns:
 

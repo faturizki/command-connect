@@ -47,6 +47,21 @@ VITE_APP_URL=http://localhost:4173
 - `VITE_DEV_TENANT` is used when running locally on `localhost` or `127.0.0.1`.
 - `VITE_APP_URL` is used for RSS and sitemap generation in `apps/public-site`.
 
+### Security: Row Level Security (RLS)
+
+- This project requires Row Level Security (RLS) to be enabled on Supabase tables to ensure tenant isolation.
+- Enable RLS for all content tables (`news`, `events`, `officers`, `gallery`, `press_kit`, `contacts`, `settings`) and create policies that only allow access when `tenant_id` matches the request context.
+- Example policy (Postgres/Supabase):
+
+```sql
+-- allow select/insert/update/delete only for rows matching the tenant from JWT
+CREATE POLICY "tenant_isolation" ON public.news
+  USING (tenant_id = current_setting('request.jwt.claims.tenant_id')::text)
+  WITH CHECK (tenant_id = current_setting('request.jwt.claims.tenant_id')::text);
+```
+
+Note: Using JWT claims requires setting custom claims on auth tokens or using a server-side service role for privileged operations. Without RLS, tenant isolation is enforced only by application code and is insecure.
+
 ## Local Development
 
 Start the public site:

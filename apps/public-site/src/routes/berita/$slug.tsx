@@ -2,7 +2,8 @@ import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site-layout";
 import { useI18n } from "@/lib/i18n";
-import { getNewsBySlug } from "@shared/supabase";
+import { getNewsBySlug, getHoaxClaimsByNewsId } from "@shared/supabase";
+import HoaxCheckerBanner from "@/components/ui/hoax-checker-banner";
 
 export const Route = createFileRoute("/berita/$slug")({
   head: ({ params }) => ({
