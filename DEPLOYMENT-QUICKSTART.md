@@ -13,7 +13,7 @@ npm run build
 
 Perintah ini:
 
-- membangun public site SSR di `apps/public-site`
+- membangun public site SPA di `apps/public-site`
 - membangun admin SPA di `apps/admin`
 - menyiapkan output Vercel di `.vercel/output`
 
@@ -29,8 +29,8 @@ Di Vercel, buat project baru dari repository ini.
   - `VITE_SUPABASE_URL`
   - `VITE_SUPABASE_ANON_KEY`
   - `SUPABASE_SERVICE_ROLE_KEY`
-  - `VITE_APP_URL=https://yourdomain.com`
-  - `VITE_TENANT_ROOT_DOMAINS=yourdomain.com`
+- `VITE_APP_URL=https://infopers.web.id`
+- `VITE_TENANT_ROOT_DOMAINS=infopers.web.id`
 
 ---
 
@@ -44,8 +44,8 @@ git push origin main
 
 Vercel akan membangun dan menerbitkan:
 
-- `https://yourdomain.com/` → Public Site
-- `https://yourdomain.com/admin/` → Admin Panel
+- `https://infopers.web.id/` → Public Site
+- `https://infopers.web.id/admin/` → Admin Panel
 
 ---
 
@@ -76,6 +76,6 @@ make dev-admin        # http://localhost:4174
 
 ## ✅ Hasil Target
 
-- Public Site: `https://yourdomain.com/`
-- Admin Panel: `https://yourdomain.com/admin/`
+- Public Site: `https://infopers.web.id/`
+- Admin Panel: `https://infopers.web.id/admin/`
 

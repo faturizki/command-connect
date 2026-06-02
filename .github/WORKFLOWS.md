@@ -1,27 +1,26 @@
-# 🔄 Deployment Workflows
+# Vercel Deployment Workflow
 
-This repository now deploys both the public site and admin panel together on Vercel.
+This repository deploys both the public website and admin panel to Vercel as a single project.
 
-## 📋 Current Deployment Strategy
+## Deployment Strategy
 
-- Public Site: `apps/public-site` (SSR)
-- Admin Panel: `apps/admin` (static SPA)
-- Deployment Host: Vercel
-- Public URL: `https://yourdomain.com/`
-- Admin URL: `https://yourdomain.com/admin/`
+- Public site: `apps/public-site` (SPA)
+- Admin panel: `apps/admin` (SPA)
+- Hosting: Vercel
+- Primary domain: `https://infopers.web.id/`
+- Admin URL: `https://infopers.web.id/admin/`
+- Backend: Supabase
 
-Vercel handles build and publish from the repository root using `npm run build`.
+## Build Flow
 
-## 🛠️ Vercel Build Steps
-
-1. Checkout code from GitHub
+1. Checkout repository
 2. Install dependencies
 3. Run `npm run build`
-4. Build public SSR site and admin SPA
+4. Build public and admin apps
 5. Prepare `.vercel/output`
-6. Publish deploy to Vercel
+6. Publish to Vercel
 
-## 🔧 Environment Variables
+## Environment Variables
 
 Set these in the Vercel dashboard:
 
@@ -29,12 +28,18 @@ Set these in the Vercel dashboard:
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-VITE_APP_URL=https://yourdomain.com
-VITE_TENANT_ROOT_DOMAINS=yourdomain.com
+VITE_APP_URL=https://infopers.web.id
+VITE_TENANT_ROOT_DOMAINS=infopers.web.id
 ```
 
-## ⚠️ Legacy GitHub Actions Workflows
+## CI Validation
 
-The repository contains old workflows under `.github/workflows/` for Cloudflare Pages and GitHub Pages deployment. These are legacy artifacts and may not be used for current Vercel deployment.
+This repository uses `.github/workflows/ci.yml` for pre-deploy validation:
 
-If Vercel deployment is active, focus on the Vercel project dashboard instead of GitHub Actions for deployment status.
+- `typecheck`
+- `lint`
+- `test`
+- `build-public-site`
+- `build-admin`
+
+If any CI job fails, the Vercel deployment should not proceed.

@@ -4,13 +4,13 @@ This guide explains how to deploy the `command-connect` public site and admin pa
 
 ## Deployment Architecture
 
-- Public Site: `apps/public-site` (SSR via TanStack Start + Nitro)
-- Admin Panel: `apps/admin` (static SPA)
+- Public Site: `apps/public-site` (SPA)
+- Admin Panel: `apps/admin` (SPA)
 - Backend: Supabase hosted project
 - Deployment Host: Vercel
 - URL targets:
-  - `https://yourdomain.com/` → Public Site
-  - `https://yourdomain.com/admin/` → Admin Panel
+  - `https://infopers.web.id/` → Public Site
+  - `https://infopers.web.id/admin/` → Admin Panel
 
 ## Build and Deploy
 
@@ -23,14 +23,14 @@ npm run build
 
 The build step:
 
-1. Builds the public SSR site in `apps/public-site`
+1. Builds the public SPA in `apps/public-site`
 2. Builds the admin SPA in `apps/admin`
 3. Prepares Vercel output under `.vercel/output`
 
-On Vercel, configure the project to deploy from the repository root. Vercel will detect the build output and publish:
+On Vercel, configure the project to deploy from the repository root. Vercel will publish:
 
-- `/` from the SSR public site
-- `/admin/` from the static admin output
+- `/` from the public site build
+- `/admin/` from the admin build
 
 ## Production Environment Variables
 
@@ -40,8 +40,8 @@ Set these environment variables in Vercel:
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-VITE_APP_URL=https://yourdomain.com
-VITE_TENANT_ROOT_DOMAINS=yourdomain.com
+VITE_APP_URL=https://infopers.web.id
+VITE_TENANT_ROOT_DOMAINS=infopers.web.id
 ```
 
 ### Notes
@@ -57,27 +57,27 @@ This repository prepares Vercel output under `.vercel/output` after `npm run bui
 
 On Vercel:
 
-- Set the root project to this repository
-- Use the default build command (`npm run build`)
-- Confirm the project deploys from the repo root
-- Set environment variables in Vercel
+- Set the build command to `npm run build`
+- Set the root directory to `/`
+- Add the required environment variables
+- Deploy from the repository root
 
 ## Admin Panel under `/admin/`
 
 The admin app is built with a base path of `/admin/` so it can be hosted from the same Vercel project as the public site.
 
-During build, admin assets are copied into the Vercel static output under `/admin/`, making the admin panel available at:
+During build, admin assets are included in the Vercel static output so the admin panel is available at:
 
 ```text
-https://yourdomain.com/admin/
+https://infopers.web.id/admin/
 ```
 
 ## Supabase Backend
 
 The backend for both apps is Supabase.
 
-- Public site uses anonymous Supabase access for read-only data flows
-- Admin panel uses Supabase auth and row-level data access
+- Public site uses Supabase for frontend data access
+- Admin panel uses Supabase auth and data access controls
 - Shared Supabase helpers are implemented in `packages/shared/supabase.ts`
 
 ## Local Development
@@ -108,5 +108,4 @@ make dev-admin
 - [ ] Public site loads at `/`
 - [ ] Admin panel loads at `/admin/`
 - [ ] Supabase backend is reachable
-- [ ] SSR pages render correctly
 - [ ] Static admin assets load correctly

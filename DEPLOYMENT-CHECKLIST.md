@@ -58,7 +58,7 @@ Checklist komprehensif untuk memastikan deployment berjalan dengan lancar.
   - [ ] `SUPABASE_SERVICE_ROLE_KEY`
   - [ ] `VITE_APP_URL`
   - [ ] `VITE_TENANT_ROOT_DOMAINS`
-- [ ] Domain configured for `yourdomain.com`
+- [ ] Domain configured for `infopers.web.id`
 - [ ] HTTPS enabled automatically
 
 ### Preview & Testing
@@ -68,10 +68,10 @@ Checklist komprehensif untuk memastikan deployment berjalan dengan lancar.
   npm run build
   ```
 - [ ] `.vercel/output/` generated
-- [ ] Site accessible at `https://yourdomain.com/`
+- [ ] Site accessible at `https://infopers.web.id/`
 - [ ] No browser console errors
 - [ ] API calls work correctly
-- [ ] SSR functioning properly
+- [ ] SPA routing functioning properly
 
 ---
 
@@ -89,7 +89,7 @@ Checklist komprehensif untuk memastikan deployment berjalan dengan lancar.
 - [ ] Admin panel builds locally: `make build-admin`
 - [ ] Preview works: `make preview-admin`
 - [ ] Dist folder generated correctly
-- [ ] Site accessible at `https://yourdomain.com/admin/`
+- [ ] Site accessible at `https://infopers.web.id/admin/`
 
 ---
 
@@ -123,8 +123,8 @@ git push origin main
 # Go to: GitHub → Actions tab
 
 # 4. Verify deployments
-# Public: https://command-connect.id
-# Admin: https://admin.command-connect.id
+# Public: https://infopers.web.id
+# Admin: https://infopers.web.id/admin
 ```
 
 ### Monitoring
@@ -140,8 +140,8 @@ git push origin main
 
 ### Public Site
 
-- [ ] Site loads at `https://yourdomain.com/`
-- [ ] SSR working (view page source shows HTML)
+- [ ] Site loads at `https://infopers.web.id/`
+- [ ] SPA routing working
 - [ ] All pages accessible
 - [ ] Images loading correctly
 - [ ] API calls to backend working
@@ -151,7 +151,7 @@ git push origin main
 
 ### Admin Panel
 
-- [ ] Site loads at `https://yourdomain.com/admin/`
+- [ ] Site loads at `https://infopers.web.id/admin/`
 - [ ] SPA routing working
 - [ ] All pages accessible
 - [ ] Components rendering correctly
@@ -254,9 +254,9 @@ Before considering deployment complete:
 
 ## 🎉 Deployment Complete!
 
-**Public Site:** ✅ https://command-connect.id  
-**Admin Panel:** ✅ https://admin.command-connect.id  
-**Backend:** ✅ https://api.command-connect.id  
+**Public Site:** ✅ https://infopers.web.id  
+**Admin Panel:** ✅ https://infopers.web.id/admin  
+**Backend:** ✅ Supabase backend  
 
 ---
 
