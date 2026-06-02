@@ -4,7 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const publicDist = path.join(root, "apps/public-site/dist");
 const adminDist = path.join(root, "apps/admin/dist");
-const output = path.join(root, ".vercel/output");
+const output = path.join(root, "public");
 
 async function copyRecursive(src, dest) {
   await mkdir(dest, { recursive: true });
@@ -34,26 +34,9 @@ async function main() {
   }
 
   await copyRecursive(publicDist, output);
-  await copyRecursive(adminDist, path.join(output, "static", "admin"));
+  await copyRecursive(adminDist, path.join(output, "admin"));
 
-  // Create Vercel config for proper static routing
-  const config = {
-    version: 3,
-    routes: [
-      { src: "/admin/(.*)", dest: "/static/admin/index.html" },
-      { src: "/assets/(.*)", dest: "/assets/$1" },
-      { src: "/(.*)", dest: "/index.html" }
-    ],
-    cleanUrls: true,
-    trailingSlash: false
-  };
-  
-  await writeFile(
-    path.join(output, "config.json"),
-    JSON.stringify(config, null, 2)
-  );
-
-  console.log("✅ Vercel build output prepared in .vercel/output");
+  console.log("✅ Public folder prepared for deployment");
 }
 
 main().catch((error) => {
