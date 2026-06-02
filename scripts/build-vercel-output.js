@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readdir, rm, stat } from "node:fs/promises";
+import { copyFile, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
@@ -35,6 +35,23 @@ async function main() {
 
   await copyRecursive(publicDist, output);
   await copyRecursive(adminDist, path.join(output, "static", "admin"));
+
+  // Create Vercel config for proper static routing
+  const config = {
+    version: 3,
+    routes: [
+      { src: "/admin/(.*)", dest: "/static/admin/index.html" },
+      { src: "/assets/(.*)", dest: "/assets/$1" },
+      { src: "/(.*)", dest: "/index.html" }
+    ],
+    cleanUrls: true,
+    trailingSlash: false
+  };
+  
+  await writeFile(
+    path.join(output, "config.json"),
+    JSON.stringify(config, null, 2)
+  );
 
   console.log("✅ Vercel build output prepared in .vercel/output");
 }

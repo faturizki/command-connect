@@ -1,17 +1,7 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "apps/public-site/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "apps/public-site/dist" }
-    },
-    {
-      "src": "apps/admin/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "apps/admin/dist" }
-    }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": ".vercel/output",
   "rewrites": [
     { "source": "/admin/(.*)", "destination": "/admin/index.html" },
     { "source": "/((?!admin).*)", "destination": "/index.html" }
