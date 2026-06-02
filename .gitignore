@@ -39,3 +39,4 @@ apps/admin/dist
 # Environment files
 .env
 .env.*
+.vercel

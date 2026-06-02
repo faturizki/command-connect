@@ -1,15 +1,15 @@
 /**
  * API Route: POST /api/r2-presign
- * 
+ *
  * Generates a presigned URL for uploading files to Cloudflare R2
- * 
+ *
  * Request body:
  * {
  *   filename: string
  *   contentType: string
  *   folder?: string (default: "uploads")
  * }
- * 
+ *
  * Response:
  * {
  *   presignedUrl: string
