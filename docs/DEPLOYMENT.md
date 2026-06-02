@@ -1,84 +1,112 @@
 # Deployment Guide
 
-This guide explains how to deploy the `command-connect` public site and admin panel in production.
+This guide explains how to deploy the `command-connect` public site and admin panel together on Vercel with Supabase as the backend.
 
-## Build Targets
+## Deployment Architecture
 
-This project separates the public website and admin dashboard into two independent build outputs.
+- Public Site: `apps/public-site` (SSR via TanStack Start + Nitro)
+- Admin Panel: `apps/admin` (static SPA)
+- Backend: Supabase hosted project
+- Deployment Host: Vercel
+- URL targets:
+  - `https://yourdomain.com/` → Public Site
+  - `https://yourdomain.com/admin/` → Admin Panel
 
-- Public site: `npm run build`
-- Admin app: `npm run build:admin`
+## Build and Deploy
 
-Both commands should be executed from the repository root.
+From the repository root:
+
+```bash
+npm install
+npm run build
+```
+
+The build step:
+
+1. Builds the public SSR site in `apps/public-site`
+2. Builds the admin SPA in `apps/admin`
+3. Prepares Vercel output under `.vercel/output`
+
+On Vercel, configure the project to deploy from the repository root. Vercel will detect the build output and publish:
+
+- `/` from the SSR public site
+- `/admin/` from the static admin output
 
 ## Production Environment Variables
 
-Set the same Supabase variables for both applications:
+Set these environment variables in Vercel:
 
 ```env
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-VITE_DEV_TENANT=demo
-VITE_APP_URL=https://your-public-site-domain.com
-VITE_TENANT_ROOT_DOMAINS=infopers.web.id,infopers.biz.id
+VITE_APP_URL=https://yourdomain.com
+VITE_TENANT_ROOT_DOMAINS=yourdomain.com
 ```
 
 ### Notes
 
 - `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` must point to the same Supabase project for both apps.
-- `VITE_APP_URL` should be the public site base URL. It is used for RSS and sitemap generation.
-- `VITE_DEV_TENANT` is only required for local development and can be omitted in production.
+- `SUPABASE_SERVICE_ROLE_KEY` should be kept secret and only used server-side.
+- `VITE_APP_URL` should be the public root domain.
+- `VITE_TENANT_ROOT_DOMAINS` controls hostname tenant resolution.
 
-## Hosting Recommendations
+## Vercel Configuration
 
-### Public Site
+This repository prepares Vercel output under `.vercel/output` after `npm run build`.
 
-The public site is built with Vite and supports server-side rendering via `apps/public-site/src/server.ts`.
+On Vercel:
 
-Recommended deployment options:
+- Set the root project to this repository
+- Use the default build command (`npm run build`)
+- Confirm the project deploys from the repo root
+- Set environment variables in Vercel
 
-- Vercel
-- Netlify
-- Cloudflare Pages with custom serverless SSR logic
-- Any hosting provider that supports deploying a Vite SSR application
+## Admin Panel under `/admin/`
 
-### Admin App
+The admin app is built with a base path of `/admin/` so it can be hosted from the same Vercel project as the public site.
 
-The admin app is a client-side Vite SPA.
+During build, admin assets are copied into the Vercel static output under `/admin/`, making the admin panel available at:
 
-Recommended deployment options:
+```text
+https://yourdomain.com/admin/
+```
 
-- Vercel
-- Netlify
-- Netlify Drop
-- Any static hosting provider that supports Vite build output
+## Supabase Backend
 
-## Tenant Subdomain Setup
+The backend for both apps is Supabase.
 
-For multi-tenant mode, production hostnames should use wildcard subdomains.
+- Public site uses anonymous Supabase access for read-only data flows
+- Admin panel uses Supabase auth and row-level data access
+- Shared Supabase helpers are implemented in `packages/shared/supabase.ts`
 
-Example mapping:
+## Local Development
 
-- `client1.example.com` → tenant slug `client1`
-- `client2.example.com` → tenant slug `client2`
+1. Install dependencies:
 
-In production, point wildcard DNS to your public site host and configure the hosting service to accept subdomain traffic.
+```bash
+npm install
+```
 
-## Supabase Security
+2. Run the public site locally:
 
-The client-side public site uses the Supabase anon key, so all server-side tenant filtering must be enforced in the application.
+```bash
+make dev
+```
 
-Important security points:
+3. Run the admin panel locally:
 
-- All shared queries use `.eq('tenant_id', tenantId)`
-- Admin users are validated against the `tenant_users` table
-- Sensitive operations should always use the resolved tenant ID from the tenant slug
+```bash
+make dev-admin
+```
 
 ## Post-Deployment Checklist
 
-- Verify public site builds successfully
-- Verify admin app builds successfully
-- Confirm environment variables are available to both deployed apps
-- Test tenant subdomain access with at least one valid tenant slug
-- Confirm RSS and sitemap endpoints work for the deployed site
+- [ ] `npm run build` succeeds
+- [ ] `.vercel/output/` is generated
+- [ ] Vercel environment variables are configured
+- [ ] Public site loads at `/`
+- [ ] Admin panel loads at `/admin/`
+- [ ] Supabase backend is reachable
+- [ ] SSR pages render correctly
+- [ ] Static admin assets load correctly

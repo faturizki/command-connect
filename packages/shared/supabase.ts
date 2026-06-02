@@ -10,6 +10,8 @@ import type {
   ContactMessage,
   SettingRecord,
   SearchResults,
+  VideoItem,
+  HoaxClaim,
 } from "./types";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL!;

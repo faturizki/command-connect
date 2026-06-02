@@ -5,8 +5,8 @@
  * localhost:5173            → 'demo' (dev fallback)
  */
 function getConfiguredTenantRoots(): string[] {
-  const envValues = import.meta.env.VITE_TENANT_ROOT_DOMAINS?.split(",") ?? [];
-  const roots = envValues.map((value) => value.trim()).filter(Boolean);
+  const envValues: string[] = import.meta.env.VITE_TENANT_ROOT_DOMAINS?.split(",") ?? [];
+  const roots = envValues.map((value: string) => value.trim()).filter(Boolean);
   return roots.length > 0 ? roots : ["infopers.web.id", "infopers.biz.id"];
 }
 

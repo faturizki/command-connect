@@ -11,10 +11,9 @@ Checklist komprehensif untuk memastikan deployment berjalan dengan lancar.
 - [ ] Main branch adalah production branch
 - [ ] Branch protection rules dikonfigurasi
 - [ ] GitHub Actions enabled
-- [ ] Secrets configured:
-  - [ ] `CLOUDFLARE_API_TOKEN`
-  - [ ] `CLOUDFLARE_ACCOUNT_ID`
-  - [ ] (Optional) `VITE_PB_URL` untuk production
+- [ ] Vercel project setup completed
+- [ ] Environment variables configured in Vercel
+- [ ] (Optional) `VITE_PB_URL` untuk production
 
 ### Code Quality
 
@@ -27,14 +26,12 @@ Checklist komprehensif untuk memastikan deployment berjalan dengan lancar.
 
 ### Configuration Files
 
-- [ ] `.github/workflows/deploy-public-site.yml` created
-- [ ] `.github/workflows/deploy-admin-panel.yml` created
-- [ ] `wrangler.toml` configured untuk Cloudflare
 - [ ] `vite.config.ts` configured di kedua apps
 - [ ] `.env.example` updated
 - [ ] `.gitignore` includes dist/, pb_data/, .env
 - [ ] `Makefile` updated dengan deployment commands
-- [ ] `_config.yml` created untuk GitHub Pages
+- [ ] Vercel project settings configured
+- [ ] `.vercel/output` prepared by build
 
 ### Documentation
 
@@ -48,89 +45,51 @@ Checklist komprehensif untuk memastikan deployment berjalan dengan lancar.
 
 ---
 
-## 🌐 Cloudflare Pages Setup
+## 🌐 Vercel Deployment Setup
 
-### Cloudflare Dashboard
+### Vercel Project
 
-- [ ] Cloudflare account created & verified
-- [ ] Domain registered & verified
-- [ ] SSL/TLS certificate active
-
-### API Token
-
-- [ ] Cloudflare API Token generated
-- [ ] Token permissions: `Cloudflare Pages - Deploy`
-- [ ] Token copied ke GitHub Secrets: `CLOUDFLARE_API_TOKEN`
-- [ ] Account ID copied ke GitHub Secrets: `CLOUDFLARE_ACCOUNT_ID`
-
-### Pages Project
-
-- [ ] Pages project created
-- [ ] Repository connected via GitHub
-- [ ] Build command configured:
-  ```
-  bun install && cd apps/public-site && bun run build
-  ```
-- [ ] Output directory set: `apps/public-site/dist`
-- [ ] Environment variables set:
-  - [ ] `VITE_PB_URL`
+- [ ] Vercel project created from repository root
+- [ ] Build command set to `npm run build`
+- [ ] Root directory set to `/`
+- [ ] Environment variables configured:
+  - [ ] `VITE_SUPABASE_URL`
+  - [ ] `VITE_SUPABASE_ANON_KEY`
+  - [ ] `SUPABASE_SERVICE_ROLE_KEY`
   - [ ] `VITE_APP_URL`
-
-### Custom Domain
-
-- [ ] Custom domain `command-connect.id` added
-- [ ] DNS records pointing to Cloudflare
-- [ ] SSL certificate auto-provisioned
-- [ ] Domain accessible via HTTPS
+  - [ ] `VITE_TENANT_ROOT_DOMAINS`
+- [ ] Domain configured for `yourdomain.com`
+- [ ] HTTPS enabled automatically
 
 ### Preview & Testing
 
 - [ ] Manual deployment test:
   ```bash
-  wrangler pages deploy apps/public-site/dist
+  npm run build
   ```
-- [ ] Site accessible at domain
-- [ ] No errors di browser console
+- [ ] `.vercel/output/` generated
+- [ ] Site accessible at `https://yourdomain.com/`
+- [ ] No browser console errors
 - [ ] API calls work correctly
 - [ ] SSR functioning properly
 
 ---
 
-## 🐙 GitHub Pages Setup
+## 🐙 Admin Panel Setup on Vercel
 
-### Repository Configuration
+### Vercel Configuration
 
-- [ ] GitHub Pages enabled
-- [ ] Source set to main branch
-- [ ] Build & deployment folder: `/`
-- [ ] Environment: `github-pages` configured
-
-### Custom Domain (Optional)
-
-- [ ] Custom domain configured: `admin.command-connect.id`
-- [ ] DNS CNAME record created:
-  ```
-  admin.command-connect.id CNAME <github-username>.github.io
-  ```
-- [ ] HTTPS enabled & certificate valid
-- [ ] Domain accessible
-
-### GitHub Actions
-
-- [ ] `deploy-admin-panel.yml` workflow created
-- [ ] Workflow permissions set:
-  - [ ] `contents: read`
-  - [ ] `pages: write`
-  - [ ] `id-token: write`
-- [ ] Artifacts upload configured
-- [ ] Deployment action configured
+- [ ] Admin panel served from `/admin/`
+- [ ] `apps/admin` built with base path `/admin/`
+- [ ] Static assets published via `.vercel/output`
+- [ ] No separate GitHub Pages deployment required
 
 ### Preview & Testing
 
 - [ ] Admin panel builds locally: `make build-admin`
 - [ ] Preview works: `make preview-admin`
 - [ ] Dist folder generated correctly
-- [ ] Site accessible at domain/URL
+- [ ] Site accessible at `https://yourdomain.com/admin/`
 
 ---
 
@@ -170,20 +129,18 @@ git push origin main
 
 ### Monitoring
 
-- [ ] GitHub Actions workflow triggered
-- [ ] Public site workflow completed ✅
-- [ ] Admin panel workflow completed ✅
-- [ ] Cloudflare deployment successful
-- [ ] GitHub Pages deployment successful
+- [ ] Vercel deployment triggered
+- [ ] Public site deployment completed ✅
+- [ ] Admin panel deployment completed ✅
 - [ ] Both sites accessible and working
 
 ---
 
 ## 🔍 Post-Deployment Verification
 
-### Public Site (Cloudflare Pages)
+### Public Site
 
-- [ ] Site loads at https://command-connect.id
+- [ ] Site loads at `https://yourdomain.com/`
 - [ ] SSR working (view page source shows HTML)
 - [ ] All pages accessible
 - [ ] Images loading correctly
@@ -192,9 +149,9 @@ git push origin main
 - [ ] Mobile responsive
 - [ ] Performance acceptable
 
-### Admin Panel (GitHub Pages)
+### Admin Panel
 
-- [ ] Site loads at admin URL
+- [ ] Site loads at `https://yourdomain.com/admin/`
 - [ ] SPA routing working
 - [ ] All pages accessible
 - [ ] Components rendering correctly
@@ -205,32 +162,21 @@ git push origin main
 
 ### API Backend
 
-- [ ] PocketBase running at https://api.command-connect.id
-- [ ] Collections accessible
-- [ ] CORS configured correctly
-- [ ] Auth endpoints working
-- [ ] Data endpoints responding
+- [ ] Supabase backend reachable
+- [ ] API endpoints responding
+- [ ] Authentication flow working
+- [ ] Data access correct for tenant scope
 
 ---
 
 ## 📊 Monitoring & Logging
 
-### Cloudflare
+### Vercel
 
-- [ ] Monitor deployment logs:
-  ```bash
-  wrangler pages deployment list --project-name=command-connect-public
-  ```
-- [ ] Check real-time logs
-- [ ] Monitor error rates
-- [ ] Check performance metrics
-
-### GitHub Pages
-
-- [ ] Monitor workflow runs in Actions
-- [ ] Check deployment history
-- [ ] Review error logs if needed
-- [ ] Monitor GitHub Pages uptime
+- [ ] Monitor deployment status in Vercel dashboard
+- [ ] Review build logs for errors
+- [ ] Check runtime logs for SSR and static requests
+- [ ] Monitor performance metrics
 
 ### Application
 

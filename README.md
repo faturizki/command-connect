@@ -139,12 +139,13 @@ See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for an architectural overview
 ┌──────────────────┐  ┌──────────────────┐
 │  Public Site     │  │  Admin Panel     │
 │  (TanStack SSR)  │  │  (Vite SPA)      │
-└────────┬─────────┘  └────────┬─────────┘
-         │                     │
-         ▼                     ▼
-    Cloudflare Pages    GitHub Pages
-         │                     │
-    command-connect.id   admin.command-connect.id
+└──────────┬─────────┘  └─────────┬──────────┘
+           │                      │
+           ▼                      ▼
+   Vercel Project (same domain)
+           │
+           ▼
+  yourdomain.com/          yourdomain.com/admin/
 ```
 
 ---
@@ -155,44 +156,28 @@ See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for an architectural overview
 
 ```bash
 # Install dependencies
-bun install
+npm install
 
 # Public site (http://localhost:4173)
 make dev
 
 # Admin panel (http://localhost:4174)
 make dev-admin
-
-# Backend PocketBase (http://localhost:8090)
-make dev-backend
 ```
 
 ### Deployment
 
-**Tanpa Konfigurasi Manual:**
-
 ```bash
-# Setup wizard interaktif
-make deploy-setup
+# Build both apps and prepare Vercel output
+npm run build
 
-# Test deployment locally
-make deploy-test
+# Deploy using Vercel from the repo root
+# (Vercel will publish public site at / and admin at /admin/)
 ```
 
-**Atau Manual:**
-
-```bash
-# Build untuk production
-make deploy-public    # Public site → Cloudflare Pages
-make deploy-admin     # Admin panel → GitHub Pages
-
-# Push ke main branch
-git push origin main
-```
-
-Workflows akan trigger otomatis dan mendeploy ke:
-- 🌐 **Public Site:** https://command-connect.id
-- 📊 **Admin Panel:** https://admin.command-connect.id
+The target deployment layout is:
+- `https://yourdomain.com/` → Public Site
+- `https://yourdomain.com/admin/` → Admin Panel
 
 ---
 
@@ -202,8 +187,8 @@ Workflows akan trigger otomatis dan mendeploy ke:
 command-connect/
 ├── .github/
 │   └── workflows/
-│       ├── deploy-public-site.yml     # Cloudflare Pages CI/CD
-│       └── deploy-admin-panel.yml     # GitHub Pages CI/CD
+│       ├── deploy-public-site.yml     # Legacy CI/CD workflow (deprecated)
+│       └── deploy-admin-panel.yml     # Legacy CI/CD workflow (deprecated)
 ├── apps/
 │   ├── public-site/                   # Public website (TanStack Start)
 │   │   ├── src/
@@ -224,7 +209,6 @@ command-connect/
 │   ├── build.sh                       # Build helper script
 │   └── deploy-setup.sh                # Deployment setup wizard
 ├── Makefile                           # Root commands
-├── wrangler.toml                      # Cloudflare Pages config
 ├── DEPLOYMENT.md                      # Detailed deployment guide
 ├── DEPLOYMENT-QUICKSTART.md           # Quick deployment start
 └── package.json                       # Monorepo configuration
@@ -280,37 +264,23 @@ make help             # Show all available commands
 
 ## 🌐 Deployment Targets
 
-### Public Site → Cloudflare Pages
+### Public Site + Admin Panel → Vercel (same domain)
 
 | Komponen | Value |
 |----------|-------|
-| Framework | TanStack Start (SSR) |
-| Platform | Cloudflare Pages |
-| Domain | command-connect.id |
-| Build | `bun install && cd apps/public-site && bun run build` |
-| Output | `apps/public-site/dist/` |
+| Public Site | `apps/public-site` (TanStack Start SSR) |
+| Admin Panel | `apps/admin` (Vite SPA) |
+| Platform | Vercel |
+| Domain | `https://yourdomain.com/` and `https://yourdomain.com/admin/` |
+| Build | `npm run build` |
+| Output | `.vercel/output/` |
 
 **Keuntungan:**
-- ✅ Full SSR support
-- ✅ Global edge network
-- ✅ Environment variables terintegrasi
-- ✅ Automatic SSL/HTTPS
-
-### Admin Panel → GitHub Pages
-
-| Komponen | Value |
-|----------|-------|
-| Framework | Vite + React (SPA) |
-| Platform | GitHub Pages |
-| Domain | admin.command-connect.id |
-| Build | `cd apps/admin && bun run build` |
-| Output | `apps/admin/dist/` |
-
-**Keuntungan:**
-- ✅ Gratis dengan GitHub repo
-- ✅ Automatic builds on push
-- ✅ Simple configuration
-- ✅ CDN global
+- ✅ Single Vercel project for both sites
+- ✅ Public site served at `/`
+- ✅ Admin panel served at `/admin/`
+- ✅ SSR public site with Nitro/Vercel integration
+- ✅ Supabase backend for data and auth
 
 ---
 
@@ -322,17 +292,12 @@ make help             # Show all available commands
 - **Git:** Latest
 - **Docker:** (Optional, for PocketBase)
 
-### GitHub Setup
+### Vercel Setup
 
-- Repository secrets (for Cloudflare deployment)
-- GitHub Pages enabled
-- Actions enabled
-
-### Cloudflare Setup
-
-- Cloudflare account dengan domain terverifikasi
-- Cloudflare API token dengan permissions
-- Wrangler CLI terinstall (optional)
+- Vercel project created from repository root
+- Environment variables configured in Vercel
+- Build command: `npm run build`
+- Output directory: automatic via `.vercel/output`
 
 ---
 
@@ -346,15 +311,14 @@ VITE_APP_URL=http://localhost:4173
 VITE_ADMIN_APP_URL=http://localhost:4174
 ```
 
-### Production (GitHub Secrets)
+### Production (Vercel Environment)
 
 ```env
-# Cloudflare
-CLOUDFLARE_API_TOKEN=<token>
-CLOUDFLARE_ACCOUNT_ID=<account-id>
-
-# Optional overrides
-VITE_PB_URL=https://api.command-connect.id
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+VITE_APP_URL=https://yourdomain.com
+VITE_TENANT_ROOT_DOMAINS=yourdomain.com
 ```
 
 Lihat [DEPLOYMENT.md](DEPLOYMENT.md) untuk detail lengkap.
@@ -366,19 +330,13 @@ Lihat [DEPLOYMENT.md](DEPLOYMENT.md) untuk detail lengkap.
 ```
 Push to main
     ↓
-GitHub Actions triggers
-    ├─ deploy-public-site.yml
-    │   ├─ Lint & type-check
-    │   ├─ Build TanStack app
-    │   └─ Deploy to Cloudflare Pages
-    │
-    └─ deploy-admin-panel.yml
-        ├─ Lint & type-check
-        ├─ Build Vite app
-        └─ Deploy to GitHub Pages
+Vercel build triggers
+    ├─ Build public SSR site
+    ├─ Build admin SPA
+    └─ Publish output to Vercel
 ```
 
-Status workflows: [Actions](https://github.com/faturizki/command-connect/actions)
+Status and logs: Vercel project dashboard
 
 ---
 
@@ -423,7 +381,7 @@ Lihat [DEPLOYMENT.md](DEPLOYMENT.md) untuk troubleshooting detail.
 ## 📚 Dokumentasi Lengkap
 
 - **[ROADMAP-3.md](ROADMAP-3.md)** - Development roadmap & architecture
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Detailed deployment guide (Cloudflare + GitHub Pages)
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Detailed deployment guide (Vercel + Supabase)
 - **[DEPLOYMENT-QUICKSTART.md](DEPLOYMENT-QUICKSTART.md)** - Quick start deployment
 - **[.github/WORKFLOWS.md](.github/WORKFLOWS.md)** - GitHub Actions workflows
 - **[backend/README.md](backend/README.md)** - PocketBase setup

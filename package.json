@@ -7,8 +7,10 @@
   "scripts": {
     "dev": "cd apps/public-site && npm run dev",
     "dev:admin": "cd apps/admin && npm run dev",
-    "build": "cd apps/public-site && npm run build",
+    "build": "npm run build:public && npm run build:admin && npm run build:vercel-output",
+    "build:public": "cd apps/public-site && npm run build",
     "build:admin": "cd apps/admin && npm run build",
+    "build:vercel-output": "node ./scripts/build-vercel-output.js",
     "build:dev": "cd apps/public-site && npm run build -- --mode development",
     "preview": "cd apps/public-site && npm run preview",
     "preview:admin": "cd apps/admin && npm run preview",

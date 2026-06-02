@@ -29,10 +29,11 @@ function BeritaSlugPage() {
   });
 
   // Fetch hoax claims for this article
+  const articleId = data?.id;
   const { data: hoaxClaims, isLoading: hoaxClaimsLoading } = useQuery({
-    queryKey: ["hoax-claims", data?.id],
-    queryFn: () => getHoaxClaimsByNewsId(data!.id),
-    enabled: !!data?.id,
+    queryKey: ["hoax-claims", articleId],
+    queryFn: () => getHoaxClaimsByNewsId(articleId ?? ""),
+    enabled: !!articleId,
   });
 
   if (isLoading) {

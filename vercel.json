@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "apps/public-site/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "apps/public-site/dist" }
+    },
+    {
+      "src": "apps/admin/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "apps/admin/dist" }
+    }
+  ],
+  "rewrites": [
+    { "source": "/admin/(.*)", "destination": "/admin/index.html" },
+    { "source": "/((?!admin).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    }
+  ]
+}

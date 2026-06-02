@@ -5,7 +5,8 @@
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": false,
     "noEmit": true,
@@ -29,5 +30,9 @@
     "packages/shared/**/*.ts",
     "apps/public-site/vite.config.ts",
     "apps/admin/vite.config.ts"
+  ],
+  "exclude": [
+    "apps/public-site/src/server",
+    "apps/public-site/server"
   ]
 }

@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  base: "/admin/",
   plugins: [react(), tsconfigPaths()],
   server: {
     host: "0.0.0.0",
@@ -11,11 +12,8 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: false,
-    minify: "terser",
+    minify: "esbuild",
   },
-  // Support for GitHub Pages deployment
-  // If deploying to a subdomain like user.github.io/command-connect-admin,
-  // set base: "/command-connect-admin/"
-  // For command-connect.id/admin, set base: "/admin/"
-  base: "./",
+  // Support for path-based hosting under /admin/ on Vercel
+  // Admin assets will be served from /admin/ when deployed.
 });

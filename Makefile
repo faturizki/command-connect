@@ -17,13 +17,12 @@ help:
 	@echo "$(YELLOW)Development Commands:$(NC)"
 	@echo "  make dev                  Run public site (http://localhost:4173)"
 	@echo "  make dev-admin            Run admin panel (http://localhost:4174)"
-	@echo "  make dev-backend          Run backend PocketBase (http://localhost:8090)"
 	@echo "  make lint                 Lint all apps"
 	@echo "  make type-check           Type check all apps"
 	@echo "  make format               Format all code"
 	@echo ""
 	@echo "$(YELLOW)Build Commands:$(NC)"
-	@echo "  make build                Build public site"
+	@echo "  make build                Build public site and admin panel for Vercel"
 	@echo "  make build-admin          Build admin panel"
 	@echo "  make preview              Preview public site build"
 	@echo "  make preview-admin        Preview admin panel build"
@@ -31,8 +30,8 @@ help:
 	@echo "$(YELLOW)Deployment Commands:$(NC)"
 	@echo "  make deploy-setup         Interactive setup wizard"
 	@echo "  make deploy-test          Test deployment configurations"
-	@echo "  make deploy-public        Build & test Cloudflare Pages deployment"
-	@echo "  make deploy-admin         Build & test GitHub Pages deployment"
+	@echo "  make deploy-public        Build & prepare Vercel deployment artifacts"
+	@echo "  make deploy-admin         Build admin panel for /admin path"
 	@echo ""
 	@echo "$(YELLOW)Utility Commands:$(NC)"
 	@echo "  make install              Install dependencies"
@@ -47,15 +46,11 @@ dev-admin:
 	@echo "$(YELLOW)🚀 Starting Admin Panel...$(NC)"
 	cd apps/admin && bun run dev
 
-dev-backend:
-	@echo "$(YELLOW)🚀 Starting PocketBase Backend...$(NC)"
-	cd backend && make dev
-
 # Build
 build:
-	@echo "$(YELLOW)📦 Building Public Site...$(NC)"
-	@cd apps/public-site && bun run build
-	@echo "$(GREEN)✅ Public site built!$(NC)"
+	@echo "$(YELLOW)📦 Building Public Site + Admin Panel for Vercel...$(NC)"
+	@npm run build
+	@echo "$(GREEN)✅ Full Vercel build complete!$(NC)"
 
 build-admin:
 	@echo "$(YELLOW)📦 Building Admin Panel...$(NC)"
@@ -64,7 +59,7 @@ build-admin:
 
 preview: build
 	@echo "$(YELLOW)👀 Previewing Public Site...$(NC)"
-	cd apps/public-site && wrangler pages dev dist --local
+	cd apps/public-site && bun run preview
 
 preview-admin: build-admin
 	@echo "$(YELLOW)👀 Previewing Admin Panel...$(NC)"
@@ -95,14 +90,14 @@ deploy-test:
 	@./scripts/deploy-setup.sh --test
 
 deploy-public: lint type-check build
-	@echo "$(YELLOW)🚀 Testing Cloudflare Pages deployment...$(NC)"
-	@echo "$(GREEN)✅ Public site ready for deployment!$(NC)"
-	@echo "$(YELLOW)📝 Next: Push to main branch$(NC)"
+	@echo "$(YELLOW)🚀 Preparing Vercel deployment artifacts...$(NC)"
+	@echo "$(GREEN)✅ Vercel-ready output available in .vercel/output$(NC)"
+	@echo "$(YELLOW)📝 Next: Push to main branch or deploy from Vercel dashboard$(NC)"
 
 deploy-admin: lint type-check build-admin
-	@echo "$(YELLOW)🚀 Testing GitHub Pages deployment...$(NC)"
-	@echo "$(GREEN)✅ Admin panel ready for deployment!$(NC)"
-	@echo "$(YELLOW)📝 Next: Push to main branch$(NC)"
+	@echo "$(YELLOW)🚀 Building admin panel for /admin path...$(NC)"
+	@echo "$(GREEN)✅ Admin panel build complete!$(NC)"
+	@echo "$(YELLOW)📝 Use the same Vercel project deploy to expose /admin/$(NC)"
 
 # Install & Clean
 install:
