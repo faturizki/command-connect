@@ -218,24 +218,21 @@ git push origin main
 
 1. **Immediate Rollback:**
    ```bash
-   # Cloudflare Pages
-   wrangler pages deployment rollback \
-     --project-name=command-connect-public \
-     --deployment-id=<previous-deployment-id>
-   
-   # GitHub Pages (push previous commit)
+   # Vercel rollback
+   # Use the Vercel dashboard to restore a previous deployment
+   # or rollback to a known-good commit in GitHub
    git revert <bad-commit>
    git push origin main
    ```
 
 2. **Check Logs:**
-   - Cloudflare dashboard → Deployments
+   - Vercel dashboard → Deployment logs
    - GitHub → Actions → Failed workflow
 
 3. **Fix & Re-deploy:**
    - Fix issue locally
    - Commit & push
-   - Workflows trigger automatically
+   - CI jobs trigger automatically
 
 ---
 

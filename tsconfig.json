@@ -27,7 +27,7 @@
     "apps/public-site/src/**/*.tsx",
     "apps/admin/src/**/*.ts",
     "apps/admin/src/**/*.tsx",
-    "packages/shared/**/*.ts",
+    "packages/shared/**/*",
     "apps/public-site/vite.config.ts",
     "apps/admin/vite.config.ts"
   ],

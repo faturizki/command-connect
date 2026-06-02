@@ -344,8 +344,7 @@ Status and logs: Vercel project dashboard
 
 ### Deployment Status
 
-- **Cloudflare Pages:** [Dashboard](https://dash.cloudflare.com/pages)
-- **GitHub Pages:** [Settings → Pages](https://github.com/settings/pages)
+- **Vercel:** Vercel project dashboard
 - **GitHub Actions:** [Workflows](https://github.com/faturizki/command-connect/actions)
 
 ### Logs
@@ -356,6 +355,8 @@ gh run list --repo faturizki/command-connect
 gh run view <run-id> --repo faturizki/command-connect --log
 ```
 
+For Vercel build/runtime logs, use the Vercel dashboard.
+
 ---
 
 ## 🐛 Troubleshooting
@@ -363,16 +364,16 @@ gh run view <run-id> --repo faturizki/command-connect --log
 ### Build Fails
 
 1. Check logs di GitHub Actions
-2. Verify dependencies: `bun install`
+2. Verify dependencies: `npm install`
 3. Check Node version: `node --version`
 4. Test locally: `make build` atau `make build-admin`
 
 ### Deployment Fails
 
-1. Verify GitHub Secrets configured
-2. Check Cloudflare API token valid
-3. Verify domain DNS records
-4. Check GitHub Pages enabled
+1. Confirm Vercel project is configured correctly
+2. Verify Vercel environment variables are set
+3. Confirm `vercel.json` and `builds` config are correct
+4. Check Vercel runtime logs for route or asset errors
 
 Lihat [DEPLOYMENT.md](DEPLOYMENT.md) untuk troubleshooting detail.
 

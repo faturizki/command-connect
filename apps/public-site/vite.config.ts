@@ -1,3 +1,4 @@
+import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -12,7 +13,9 @@ export default defineConfig({
     tsconfigPaths(),
   ],
   resolve: {
-    alias: { "@shared": "../packages/shared" },
+    alias: [
+      { find: /^@shared\/(.*)/, replacement: path.resolve(__dirname, "../../packages/shared/$1") },
+    ],
   },
   build: { outDir: "dist" },
 });

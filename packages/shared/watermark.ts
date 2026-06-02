@@ -191,7 +191,7 @@ export async function applyPdfWatermark(
     const buffers: Buffer[] = [];
 
     // Collect output
-    doc.on("data", (chunk) => buffers.push(chunk));
+    doc.on("data", (chunk: Buffer) => buffers.push(chunk));
 
     // TODO: Implement PDF watermarking logic
     // This would require more complex PDF manipulation
